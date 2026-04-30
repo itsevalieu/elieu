@@ -1,0 +1,28 @@
+.achievementItem {
+  // border: 1px solid black;
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+  // display: flex;
+  // flex-direction: row;
+  // gap: 0.5rem;
+  // justify-content: space-between;
+  min-width: 100%;
+
+  .date {
+    font-size: 0.8rem;
+    color: #666;
+    // border-right: 1px solid #666;
+  }
+  .content {
+    border: 1px solid grey;
+    padding: 0.5rem 1rem;
+    h4 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+  }
+}

@@ -1,0 +1,31 @@
+# ── Node / Frontend ──────────────────────────────────────────────────
+node_modules/
+.next/
+dist/
+.turbo/
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+npm-debug.log*
+yarn-error.log*
+
+# ── Java / Gradle ─────────────────────────────────────────────────────
+.gradle/
+build/
+out/
+*.class
+*.jar
+*.war
+!gradle/wrapper/gradle-wrapper.jar
+.idea/
+*.iml
+
+# ── macOS ─────────────────────────────────────────────────────────────
+.DS_Store
+
+# ── Editors ───────────────────────────────────────────────────────────
+.vscode/
+.cursor/
+*.swp
+*.swo

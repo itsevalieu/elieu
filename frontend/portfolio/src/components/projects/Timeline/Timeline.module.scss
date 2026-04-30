@@ -1,0 +1,66 @@
+.timelineContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.timeline {
+  position: relative;
+  margin: 2rem auto;
+  padding: 2rem 0;
+  // border: 1px solid red;
+
+  // The vertical line
+  &::before {
+    content: "";
+    border-left: 1px solid #a49d9d;
+    position: absolute;
+    width: 4px;
+    background-color: var(--timeline-line-color);
+    top: 0;
+    bottom: 0;
+    // left: 50%;
+    // margin-left: -px;
+
+    @media (max-width: 768px) {
+      left: 31px;
+    }
+  }
+}
+
+.yearContainer {
+  margin-bottom: 1rem;
+  // border: 1px solid red;
+}
+
+.year {
+  font-size: 1.5rem;
+  font-weight: bold;
+  // margin-bottom: 1rem;
+  // border: 1px solid orange;
+  // margin-left: 1rem;
+}
+.yearLabel {
+  padding-left: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.monthContainer {
+  // margin-bottom: 1rem;
+  // background: lightblue;
+  display: flex;
+}
+
+.month {
+  border-right: 1px solid grey;
+  min-width: 45px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  // margin-bottom: 0.5rem;
+  padding-right: 1rem;
+  // border: 1px solid green;
+}
+.timelineItems {
+  display: flex;
+  flex-direction: column;
+}

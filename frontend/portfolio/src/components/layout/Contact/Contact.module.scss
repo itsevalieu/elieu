@@ -1,0 +1,183 @@
+/* components/Contact.scss */
+
+// Variables
+$primary-color: #4a6cfa;
+$secondary-color: #f5f5f5;
+$text-color: #333;
+$error-color: #e53935;
+$success-color: #4caf50;
+$border-radius: 8px;
+$box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+$transition: all 0.3s ease;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin hover-effect {
+  transition: $transition;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Contact Section
+.contact {
+  background-color: $secondary-color;
+  padding: 80px 0;
+}
+
+// Container
+.contactContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: white;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+}
+
+// Title
+.contactTitle {
+  text-align: center;
+  color: $text-color;
+  margin-bottom: 30px;
+  font-size: 28px;
+  font-weight: 600;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background-color: $primary-color;
+    margin: 15px auto 0;
+  }
+}
+
+// Form
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// Form Groups
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-weight: 500;
+    color: $text-color;
+
+    .required {
+      color: $error-color;
+    }
+  }
+
+  input,
+  textarea {
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: $border-radius;
+    font-size: 16px;
+    transition: $transition;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    }
+
+    &.error {
+      border-color: $error-color;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .errorMessage {
+    color: $error-color;
+    font-size: 14px;
+    margin-top: 4px;
+  }
+}
+
+// Button
+.btn {
+  background-color: $primary-color;
+  color: white;
+  padding: 14px 28px;
+  border: none;
+  border-radius: $border-radius;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  @include hover-effect;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+// Success Message
+.successMessage {
+  text-align: center;
+  padding: 30px;
+
+  h2 {
+    color: $success-color;
+    margin-bottom: 16px;
+  }
+
+  p {
+    margin-bottom: 24px;
+    color: $text-color;
+  }
+
+  .btn {
+    display: inline-block;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .contact {
+    padding: 60px 0;
+  }
+
+  .contactContainer {
+    padding: 30px 15px;
+  }
+
+  .contactTitle {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .formGroup {
+    input,
+    textarea {
+      padding: 10px 14px;
+    }
+  }
+
+  .btn {
+    padding: 12px 24px;
+    width: 100%;
+  }
+}
