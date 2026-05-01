@@ -1,0 +1,124 @@
+.main {
+  max-width: 760px;
+  margin: 0 auto var(--spacing-xl);
+  padding: 0 var(--spacing-lg);
+}
+
+.navRow {
+  margin-bottom: var(--spacing-lg);
+}
+
+.back {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-muted);
+
+  &:hover {
+    color: var(--color-accent);
+  }
+}
+
+.header {
+  border-bottom: 3px double var(--color-rule);
+  padding-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.title {
+  font-family: var(--font-headline);
+  font-size: 2rem;
+  line-height: 1.15;
+  margin-bottom: var(--spacing-xs);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  font-size: 0.84rem;
+  color: var(--color-muted);
+
+  span {
+    text-transform: capitalize;
+  }
+}
+
+.timeline {
+  list-style: none;
+  padding-left: 0;
+  border-left: 2px solid var(--color-rule);
+  margin-left: 0.5rem;
+}
+
+.item {
+  position: relative;
+  padding-left: var(--spacing-lg);
+  padding-bottom: var(--spacing-xl);
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 0.35rem;
+    width: 8px;
+    height: 8px;
+    background: var(--color-ink);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px var(--color-bg);
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.itemInner {
+  border: 1px solid var(--color-rule);
+  padding: var(--spacing-md);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.milestoneInner {
+  border-color: var(--color-accent);
+  background: rgba(139, 0, 0, 0.04);
+}
+
+.entryDate {
+  font-family: var(--font-headline);
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--spacing-xs);
+}
+
+.milestoneRibbon {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  margin-bottom: var(--spacing-md);
+}
+
+.note {
+  white-space: pre-wrap;
+  line-height: 1.65;
+  font-size: 0.95rem;
+}
+
+.photo {
+  margin-top: var(--spacing-md);
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--color-rule);
+}
+
+.empty {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-muted);
+  font-style: italic;
+}

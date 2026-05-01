@@ -1,4 +1,4 @@
-import type { Category, Issue, PagedResponse, Post } from "@evalieu/common";
+import type { Category, Hobby, Issue, PagedResponse, Post, Recipe } from "@evalieu/common";
 
 type IssueApiRecord = Omit<Issue, "posts"> & { posts?: Post[] | null };
 
@@ -80,4 +80,55 @@ export async function listIssuesPaged(
     ...res,
     content: res.content.map(normalizeIssue),
   };
+}
+
+function normalizeHobby(data: Hobby): Hobby {
+  return {
+    ...data,
+    entries: Array.isArray(data.entries) ? data.entries : [],
+  };
+}
+
+/** All hobbies (public); entries may or may not be populated per hobby. */
+export async function getHobbies(): Promise<Hobby[]> {
+  const list = await apiFetch<Hobby[]>("/api/hobbies");
+  return list.map(normalizeHobby);
+}
+
+export async function getHobbyById(id: number): Promise<Hobby> {
+  const path = `/api/hobbies/${id}`;
+  const revalidate = 60;
+  const res = await fetch(`${API_BASE}${path}`, { next: { revalidate } });
+  if (res.status === 404) {
+    throw new Error(`HOBBY_NOT_FOUND:${id}`);
+  }
+  if (!res.ok) throw new Error(`API ${res.status}: ${path}`);
+  const raw = (await res.json()) as Hobby;
+  return normalizeHobby(raw);
+}
+
+export async function getRecipes(page = 0, size = 20): Promise<PagedResponse<Recipe>> {
+  const qs = new URLSearchParams({ page: String(page), size: String(size) });
+  return apiFetch<PagedResponse<Recipe>>(`/api/recipes?${qs}`);
+}
+
+export async function getRecipeBySlug(slug: string): Promise<Recipe | null> {
+  const path = `/api/recipes/${encodeURIComponent(slug)}`;
+  const revalidate = 60;
+  const res = await fetch(`${API_BASE}${path}`, { next: { revalidate } });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`API ${res.status}: ${path}`);
+  return res.json() as Promise<Recipe>;
+}
+
+/**
+ * Loads reading or watching trackers (backend maps categories to hobbies).
+ */
+export async function getTrackingByCategory(category: string): Promise<Hobby[]> {
+  const key = category.toLowerCase().trim();
+  if (key !== "reading" && key !== "watching") {
+    throw new Error(`Unsupported tracking category: ${category}`);
+  }
+  const list = await apiFetch<Hobby[]>(`/api/tracking/${key}`);
+  return list.map(normalizeHobby);
 }

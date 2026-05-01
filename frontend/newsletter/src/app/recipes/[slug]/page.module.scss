@@ -1,0 +1,136 @@
+.main {
+  max-width: 640px;
+  margin: 0 auto var(--spacing-xl);
+  padding: 0 var(--spacing-lg);
+}
+
+.navRow {
+  margin-bottom: var(--spacing-lg);
+}
+
+.back {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-muted);
+
+  &:hover {
+    color: var(--color-accent);
+  }
+}
+
+.hero {
+  border-bottom: 3px double var(--color-rule);
+  padding-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.title {
+  font-family: var(--font-headline);
+  font-size: 2rem;
+  line-height: 1.15;
+  margin-bottom: var(--spacing-lg);
+}
+
+.figure {
+  margin: 0 auto var(--spacing-xl);
+}
+
+.photo {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--color-rule);
+}
+
+.metaBand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+  font-size: 0.88rem;
+  color: var(--color-muted);
+}
+
+.starRow {
+  display: inline-flex;
+  gap: 3px;
+
+  span {
+    color: #d4af37;
+    font-size: 1rem;
+  }
+
+  span.emptySpan {
+    color: rgba(42, 42, 42, 0.2);
+  }
+}
+
+.section {
+  margin-bottom: var(--spacing-xl);
+
+  h2 {
+    font-family: var(--font-headline);
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-xs);
+    border-bottom: 2px solid var(--color-rule);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+}
+
+.ingredients {
+  list-style: square;
+  margin-left: 1.25rem;
+  padding: 0;
+
+  li {
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.5;
+  }
+}
+
+.steps {
+  list-style: none;
+  padding: 0;
+  counter-reset: step;
+
+  li {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.65;
+
+    &::before {
+      counter-increment: step;
+      content: counter(step) ".";
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-family: var(--font-headline);
+      font-size: 1.1rem;
+      color: var(--color-accent);
+    }
+  }
+}
+
+.related {
+  margin-top: var(--spacing-xl);
+
+  p {
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-muted);
+  }
+
+  a {
+    font-family: var(--font-headline);
+    font-size: 1.1rem;
+
+    &:hover {
+      color: var(--color-accent);
+    }
+  }
+}
