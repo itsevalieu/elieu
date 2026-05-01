@@ -47,7 +47,7 @@ public class Issue {
 	@Builder.Default
 	private String status = "draft";
 
-	@Column(name = "cover_image_url", columnDefinition = "TEXT")
+	@Column(name = "cover_image_url", length = 2000)
 	private String coverImageUrl;
 
 	@Column(name = "created_at", nullable = false)

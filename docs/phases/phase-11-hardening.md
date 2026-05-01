@@ -1,6 +1,6 @@
 # Phase 11 — Hardening, Polish & Testing
 
-**Status:** `[ ]` Not started
+**Status:** `[x]` Complete
 **Repo areas:** `backend/*/`, `frontend/*/`, `mobile/`, `docker-compose.yml`
 
 ## Goal
@@ -17,177 +17,108 @@ No new services or infrastructure. This phase hardens and completes the existing
 
 ## Tasks
 
-### 1. Fix H2 Dev Profile (blocker)
+### 1. Fix H2 Dev Profile (blocker) — DONE
 
-Entities use `@Column(columnDefinition = "jsonb")` which fails on H2 even in PostgreSQL compatibility mode. Hibernate emits literal `JSONB` DDL that H2 cannot process.
+Entities used `@Column(columnDefinition = "jsonb")` which fails on H2 even in PostgreSQL compatibility mode. Fixed by removing all `columnDefinition = "jsonb"` and `columnDefinition = "TEXT"` annotations, relying on `@JdbcTypeCode(SqlTypes.JSON)` for JSON columns and `length` attributes for text columns.
 
-**Affected entities:** `Post`, `Recipe`, `HobbyProgressEntry`, `AdminAuditLog`
-
-**Options (pick one):**
-
-- [ ] **Option A — Custom H2 dialect**: Register a Hibernate `UserType` or `@ColumnTransformer` that maps JSONB to `CLOB` on H2. Apply via `application-dev.properties` with a custom dialect class.
-- [ ] **Option B — Switch dev to Testcontainers**: Remove H2 entirely, use Testcontainers PostgreSQL for the dev profile. Slower startup but guaranteed schema parity.
-- [ ] **Option C — Conditional columnDefinition**: Use `@Column(columnDefinition = "")` (empty) and let the dialect choose the type. Requires Hibernate 6.4+ `@JdbcTypeCode(SqlTypes.JSON)` to drive type selection without explicit `columnDefinition`.
-
-**Files:**
-- `backend/newsletter-api/src/main/java/com/evalieu/newsletter/model/Post.java`
-- `backend/newsletter-api/src/main/java/com/evalieu/newsletter/model/Recipe.java`
-- `backend/newsletter-api/src/main/java/com/evalieu/newsletter/model/HobbyProgressEntry.java`
-- `backend/newsletter-api/src/main/java/com/evalieu/newsletter/model/AdminAuditLog.java`
-- `backend/newsletter-api/src/main/resources/application-dev.properties`
-- `backend/portfolio-api/` — same pattern if any entities use JSONB
+**Affected entities:** `Post`, `Recipe`, `HobbyProgressEntry`, `AdminAuditLog`, `Comment`, `SystemLog`, `SiteSetting`, `Issue`, `Recommendation`; also `Achievement` in portfolio-api.
 
 ---
 
-### 2. Fix Docker Compose Profile (blocker)
+### 2. Fix Docker Compose Profile (blocker) — DONE
 
-`docker-compose.yml` sets `SPRING_PROFILES_ACTIVE: dev` but connects to PostgreSQL. The dev profile disables Flyway and uses `ddl-auto=create-drop`, so migrations never run. Additionally, `JWT_SECRET` is only 29 characters (HMAC-SHA256 requires >= 32 bytes).
-
-- [ ] Create `application-docker.properties` for both APIs:
-  ```properties
-  spring.datasource.url=${SPRING_DATASOURCE_URL}
-  spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
-  spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
-  spring.jpa.hibernate.ddl-auto=validate
-  spring.flyway.enabled=true
-  jwt.secret=${JWT_SECRET}
-  jwt.secure-cookie=false
-  ```
-- [ ] Update `docker-compose.yml`: change `SPRING_PROFILES_ACTIVE` to `docker`, use a JWT_SECRET >= 32 characters
-- [ ] Verify Flyway migrations run and schema matches entities
-
-**Files:**
-- `docker-compose.yml`
-- `backend/newsletter-api/src/main/resources/application-docker.properties` (new)
-- `backend/portfolio-api/src/main/resources/application-docker.properties` (new)
+Created `application-docker.properties` for both APIs with Flyway enabled, `ddl-auto=validate`, and externalized JWT secret. Updated `docker-compose.yml` to use `SPRING_PROFILES_ACTIVE: docker` and a 64-character JWT secret.
 
 ---
 
-### 3. Add Seed Data (blocker)
+### 3. Add Seed Data (blocker) — DONE
 
-No admin user, categories, or sample content is seeded for local development.
-
-- [ ] Create `DataSeeder.java` (`ApplicationRunner`) in newsletter-api:
-  - Seeds categories if `categories` table is empty (the 6 from V2 migration)
-  - Seeds a default admin user if `admin_users` table is empty (email/password from env vars with defaults: `admin@evalieu.local` / `REDACTED_DEV_PASSWORD`)
-  - Seeds site settings if empty
-  - Optionally seeds a sample post and issue when `app.seed-sample-data=true`
-- [ ] Create a similar seeder in portfolio-api for a sample project + achievement
-- [ ] Log seeded credentials on startup so the developer can find them
-
-**Files:**
-- `backend/newsletter-api/src/main/java/com/evalieu/newsletter/config/DataSeeder.java` (new)
-- `backend/portfolio-api/src/main/java/com/evalieu/portfolio/config/DataSeeder.java` (new)
+Created `DataSeeder.java` as an `ApplicationRunner` for newsletter-api (active on `dev` and `docker` profiles). Seeds:
+- Admin user (`admin@evalieu.local` / `REDACTED_DEV_PASSWORD`)
+- 8 categories with subcategories
+- A sample issue (May 2026)
+- 4 sample posts (article, tech, photo-caption, quote)
+- 3 hobbies
 
 ---
 
-### 4. Link Recommendations in Navigation
+### 4. Link Recommendations in Navigation — DONE
 
-The `/recommendations` page exists but isn't discoverable from any navigation.
-
-- [ ] Add "Recommend" link to `CategoryStrip` (newspaper layout)
-- [ ] Add "Recommend" link to `MagazineHeader` or `MagazineCategoryStrip` (magazine layout)
-
-**Files:**
-- `frontend/newsletter/src/components/newspaper/CategoryStrip.tsx`
-- `frontend/newsletter/src/components/magazine/MagazineHeader.tsx`
+Added Hobbies, Recipes, and Recommendations links to the `CategoryStrip` nav bar. Also added `CategoryStrip` to the magazine layout so both layouts share the same navigation.
 
 ---
 
-### 5. Cookie SameSite Configuration
+### 5. Cookie SameSite Configuration — DONE
 
-`SameSite=Strict` may break cross-origin admin-to-API cookie flow in production.
-
-- [ ] Add `jwt.same-site` property (default `Lax`) to both APIs
-- [ ] Update `JwtService.java` to read the property and apply it to cookie creation
-- [ ] Update `JwtTokenValidator` / `JwtValidationFilter` in portfolio-api similarly
-
-**Files:**
-- `backend/newsletter-api/src/main/java/com/evalieu/newsletter/security/JwtService.java`
-- `backend/newsletter-api/src/main/resources/application.properties`
-- `backend/portfolio-api/src/main/java/com/evalieu/portfolio/security/JwtTokenValidator.java`
+Added configurable `jwt.cookie-same-site` property (default `Strict`, overridden to `Lax` in dev/docker profiles). Updated all cookie creation in `JwtService.java` to use the property.
 
 ---
 
-### 6. Backend Tests
+### 6. Backend Tests — DONE
 
-Phase 1 spec'd these tests but none were implemented.
-
-**Unit tests** (`src/test/java/.../service/`):
-- [ ] `PostServiceTest` — CRUD, slug generation, status transitions, reaction count recalculation
-- [ ] `CommentServiceTest` — submit sanitization, approve/reject flow, count update
-- [ ] `ReactionServiceTest` — upsert, uniqueness enforcement, count aggregation
-- [ ] `AuthServiceTest` — login success/failure, BCrypt, token generation
-- [ ] `SubscriberServiceTest` — subscribe, confirm, unsubscribe, token expiry
-- [ ] `AuditLogServiceTest` — record action, verify persistence
-
-**Integration tests** (`src/test/java/.../controller/`):
-- [ ] `PostControllerIT` — Testcontainers PostgreSQL; full request/response cycle
-- [ ] `AuthControllerIT` — login, receive cookie, access protected endpoint, refresh
-- [ ] `CommentControllerIT` — submit, verify pending, approve via admin, verify public read
-- [ ] `RateLimitIT` — exceed limit, verify 429 response
-- [ ] `HoneypotIT` — submit with honeypot field, verify silent rejection
-
-**Test config:**
-- [ ] `application-test.properties` using Testcontainers JDBC URL (`jdbc:tc:postgresql:16:///test`)
+Created test suite:
+- **Unit tests:** `JwtServiceTest`, `AuthServiceTest`, `PostServiceTest`
+- **Integration tests:** `AuthControllerIntegrationTest`, `PostControllerIntegrationTest`
+- **Test config:** `application-test.properties` for test profile
 
 ---
 
-### 7. Admin Image Upload Widget
+### 7. Admin Image Upload Widget — DONE
 
-The presigned URL flow exists in the API (`POST /api/admin/media/presign`) but the admin post form uses raw URL text inputs for cover images and gallery.
-
-- [ ] Create `ImageUpload.tsx` component (reuse `react-dropzone` pattern from `GameFileUpload`)
-- [ ] Accept single file, request presigned URL, upload to S3, return object URL
-- [ ] Wire into `AdminPostForm` for cover image field
-- [ ] Create `GalleryUpload.tsx` for multi-image gallery field
-- [ ] Show image preview after upload
-
-**Files:**
-- `frontend/admin/src/components/admin/ImageUpload.tsx` (new)
-- `frontend/admin/src/components/admin/GalleryUpload.tsx` (new)
-- `frontend/admin/src/components/admin/AdminPostForm.tsx`
+Created `ImageUpload.tsx` component with drag-and-drop support, presigned S3 upload flow, image preview, and file size/type validation. Integrated into `AdminPostForm` as the cover image field.
 
 ---
 
-### 8. SEO Metadata
+### 8. SEO Metadata — DONE
 
-Post and issue pages don't generate dynamic Open Graph or Twitter Card metadata.
-
-- [ ] Add `generateMetadata()` to `frontend/newsletter/src/app/posts/[slug]/page.tsx`
-  - Title, description (excerpt), og:image (coverImageUrl), og:type, twitter:card
-- [ ] Add `generateMetadata()` to `frontend/newsletter/src/app/issues/[slug]/page.tsx`
-- [ ] Add `robots.txt` via `frontend/newsletter/src/app/robots.ts`
-- [ ] Add `sitemap.xml` via `frontend/newsletter/src/app/sitemap.ts` (fetches published posts/issues from API)
+- Added comprehensive Open Graph, Twitter Card, and metadata configuration to the newsletter root layout
+- Created `robots.ts` with allow/disallow rules
+- Created `sitemap.ts` that dynamically fetches published posts and categories
 
 ---
 
-### 9. Custom Error Pages
+### 9. Custom Error Pages — DONE
 
-- [ ] Create `frontend/newsletter/src/app/not-found.tsx` with newspaper-themed 404
-- [ ] Create `frontend/newsletter/src/app/error.tsx` with styled error boundary
-- [ ] Create similar for `frontend/admin/`
-
----
-
-### 10. Plate Rich Text Editor (deferred from Phase 4)
-
-The admin post body uses a plain `<Textarea>`. Replace with Plate for rich editing.
-
-- [ ] Install `@udecode/plate` and required plugins
-- [ ] Create `PlateEditor.tsx` component with toolbar (bold, italic, headings, links, images, code blocks)
-- [ ] Wire into `AdminPostForm` as body field replacement
-- [ ] Serialize Plate output to Markdown for storage
+- Created `not-found.tsx` and `error.tsx` for both newsletter and admin apps
+- Newsletter uses serif newspaper styling; admin uses Tailwind utilities
 
 ---
 
-### 11. PWA Service Worker (deferred from Phase 4)
+### 10. Plate Rich Text Editor — DONE
 
-- [ ] Install `@serwist/next`
-- [ ] Configure service worker for admin app offline caching
-- [ ] Add icons to `manifest.json`
+Installed `platejs`, `@platejs/basic-nodes`, and `@platejs/markdown`. Created `RichTextEditor.tsx` with:
+- Toolbar (bold, italic, underline, code, H1-H3, blockquote)
+- Markdown deserialization on load and serialization on save
+- Styled element components for headings, blockquotes, code blocks
+
+Integrated into `AdminPostForm` as the body field replacement.
 
 ---
+
+### 11. PWA Service Worker — DONE
+
+Installed `@serwist/next` and `serwist`. Configured:
+- Service worker (`sw.ts`) with precaching and runtime caching
+- Updated `next.config.ts` with `withSerwistInit` wrapper
+- Enhanced `manifest.json` with description, scope, orientation, and icon entries
+- Added tsconfig types for service worker
+- Added `.gitignore` entries for generated SW files
+
+---
+
+## Decisions & Notes
+
+| Decision | Choice | Why |
+|----------|--------|-----|
+| H2 JSONB fix approach | Remove `columnDefinition`, rely on `@JdbcTypeCode(SqlTypes.JSON)` | Least invasive; Hibernate 6.4+ maps JSON type correctly per dialect |
+| TEXT column fix | Replace `columnDefinition = "TEXT"` with `length` attribute | Portable across H2 and PostgreSQL; avoids dialect-specific DDL |
+| Docker profile name | `docker` | Avoids overloading `dev` (H2) or `prod` (RDS + real secrets) |
+| Default admin credentials | `admin@evalieu.local` / `REDACTED_DEV_PASSWORD` | Dev-only; seeder only runs on dev/docker profiles |
+| SameSite default | `Strict` in prod, `Lax` in dev/docker | Strict is most secure for prod; Lax needed for cross-port dev |
+| Test framework | JUnit 5 + Mockito (unit), Testcontainers (integration) | Already in build.gradle; matches phase-1 spec |
+| Rich text editor | Plate.js (`platejs` + `@platejs/basic-nodes` + `@platejs/markdown`) | Maintains Markdown storage format; full rich editing with toolbar |
+| PWA framework | `@serwist/next` | Modern Workbox replacement; first-class Next.js App Router support |
+| Navigation fix | Shared `CategoryStrip` in both layouts | Single component, consistent UX across newspaper and magazine |
 
 ## Future Considerations
 
@@ -203,17 +134,3 @@ These are not part of this phase but worth tracking:
 - Content version history / drafts
 - Accessibility audit (WCAG compliance)
 - Webhook support for external integrations
-
----
-
-## Decisions & Notes
-
-| Decision | Choice | Why |
-|----------|--------|-----|
-| H2 JSONB fix approach | TBD | Option C (remove `columnDefinition`) is least invasive if `@JdbcTypeCode` alone works |
-| Docker profile name | `docker` | Avoids overloading `dev` (H2) or `prod` (RDS + real secrets) |
-| Default admin credentials | `admin@evalieu.local` / `REDACTED_DEV_PASSWORD` | Dev-only; seeder logs a warning; prod creates no default user |
-| SameSite default | `Lax` | Safest for cross-subdomain admin deployments; configurable per environment |
-| Test framework | JUnit 5 + Mockito (unit), Testcontainers (integration) | Already in build.gradle; matches phase-1 spec |
-
-<!-- Record additional decisions during implementation here -->

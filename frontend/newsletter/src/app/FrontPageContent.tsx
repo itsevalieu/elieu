@@ -31,6 +31,7 @@ export function FrontPageContent({
     return (
       <div className={styles.magazineShell}>
         <MagazineHeader issueLine={issueLine} />
+        <CategoryStrip categories={categories} />
         {posts.length > 0 ? (
           <>
             <MagazineFrontPageGrid

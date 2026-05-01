@@ -30,6 +30,18 @@ export function CategoryStrip({ categories }: Props) {
         <Link href="/issues" className={styles.link}>
           Issues
         </Link>
+        <span className={styles.sep}>·</span>
+        <Link href="/hobbies" className={styles.link}>
+          Hobbies
+        </Link>
+        <span className={styles.sep}>·</span>
+        <Link href="/recipes" className={styles.link}>
+          Recipes
+        </Link>
+        <span className={styles.sep}>·</span>
+        <Link href="/recommendations" className={styles.link}>
+          Recommendations
+        </Link>
       </div>
     </nav>
   );

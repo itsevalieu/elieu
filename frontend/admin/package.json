@@ -10,28 +10,33 @@
   },
   "dependencies": {
     "@evalieu/common": "*",
+    "@hello-pangea/dnd": "^18",
+    "@hookform/resolvers": "^3",
+    "@platejs/basic-nodes": "^53.0.0",
+    "@platejs/markdown": "^53.0.0",
+    "@serwist/next": "^9.5.10",
+    "clsx": "^2",
+    "lucide-react": "^0.500",
     "next": "15.3.2",
+    "platejs": "^53.0.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "swr": "^2",
-    "@hello-pangea/dnd": "^18",
     "react-dropzone": "^14",
     "react-hook-form": "^7",
-    "@hookform/resolvers": "^3",
-    "zod": "^3",
-    "lucide-react": "^0.500",
-    "clsx": "^2",
-    "tailwind-merge": "^3"
+    "serwist": "^9.5.10",
+    "swr": "^2",
+    "tailwind-merge": "^3",
+    "zod": "^3"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "typescript": "^5",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

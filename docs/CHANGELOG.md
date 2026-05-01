@@ -4,6 +4,23 @@ Running log of all work sessions, decisions, and changes. Newest entries at the 
 
 ---
 
+## 2026-05-01 — Phase 11: Hardening, Polish & Testing
+
+### Done
+- **H2 JSONB fix**: Removed all `columnDefinition = "jsonb"` and `columnDefinition = "TEXT"` from 10 entity classes; rely on `@JdbcTypeCode(SqlTypes.JSON)` and `length` attributes for cross-database compatibility
+- **Docker Compose fix**: Created `application-docker.properties` for both APIs; updated docker-compose.yml to use `docker` profile with 64-char JWT secret and Flyway enabled
+- **Seed data**: Created `DataSeeder.java` for newsletter-api (admin user, 8 categories with subcategories, sample issue, 4 sample posts, 3 hobbies)
+- **Navigation**: Added Hobbies, Recipes, Recommendations links to CategoryStrip; added CategoryStrip to magazine layout
+- **Cookie SameSite**: Made configurable via `jwt.cookie-same-site` property; Lax for dev/docker, Strict for prod
+- **Backend tests**: JwtServiceTest, AuthServiceTest, PostServiceTest (unit); AuthControllerIntegrationTest, PostControllerIntegrationTest (integration with Testcontainers)
+- **Image upload widget**: Created ImageUpload.tsx with drag-and-drop, presigned S3 upload, preview; integrated into AdminPostForm cover image field
+- **SEO**: Added Open Graph/Twitter metadata to newsletter layout; created robots.ts and sitemap.ts with dynamic post/category fetching
+- **Error pages**: Created not-found.tsx and error.tsx for both newsletter and admin apps
+- **Plate rich text editor**: Installed platejs + @platejs/basic-nodes + @platejs/markdown; created RichTextEditor.tsx with toolbar and Markdown serialization; replaced Textarea in AdminPostForm
+- **PWA service worker**: Installed @serwist/next; configured sw.ts with precaching and runtime caching; updated manifest.json with full PWA metadata
+
+---
+
 ## 2026-04-30 — Full implementation of all 11 phases
 
 ### Done

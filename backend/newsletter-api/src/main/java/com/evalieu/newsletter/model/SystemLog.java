@@ -31,10 +31,10 @@ public class SystemLog {
 	@Column(nullable = false, length = 50)
 	private String service;
 
-	@Column(nullable = false, columnDefinition = "TEXT")
+	@Column(nullable = false, length = 10000)
 	private String message;
 
-	@Column(name = "stack_trace", columnDefinition = "TEXT")
+	@Column(name = "stack_trace", length = 50000)
 	private String stackTrace;
 
 	@Column(length = 255)

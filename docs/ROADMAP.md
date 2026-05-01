@@ -14,7 +14,7 @@ Personal newspaper/magazine blog and portfolio platform. Full product plan lives
 
 ## Current Focus
 
-> Phase 11 — Hardening, Polish & Testing
+> All phases complete!
 
 ---
 
@@ -33,7 +33,7 @@ Personal newspaper/magazine blog and portfolio platform. Full product plan lives
 | 8 | Analytics, Ads, Ko-fi & Admin Dashboard | `[x]` | [phase-8-analytics-dashboard.md](phases/phase-8-analytics-dashboard.md) |
 | 9 | Games Integration | `[x]` | [phase-9-games.md](phases/phase-9-games.md) |
 | 10 | React Native Mobile App | `[x]` | [phase-10-mobile-app.md](phases/phase-10-mobile-app.md) |
-| 11 | Hardening, Polish & Testing | `[ ]` | [phase-11-hardening.md](phases/phase-11-hardening.md) |
+| 11 | Hardening, Polish & Testing | `[x]` | [phase-11-hardening.md](phases/phase-11-hardening.md) |
 
 ---
 

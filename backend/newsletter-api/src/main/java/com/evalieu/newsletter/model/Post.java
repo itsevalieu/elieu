@@ -38,10 +38,10 @@ public class Post {
 	@Column(nullable = false, length = 500, unique = true)
 	private String slug;
 
-	@Column(columnDefinition = "TEXT")
+	@Column(length = 10000)
 	private String excerpt;
 
-	@Column(nullable = false, columnDefinition = "TEXT")
+	@Column(nullable = false, length = 100000)
 	private String body;
 
 	@Column(name = "category_id")
@@ -50,14 +50,14 @@ public class Post {
 	@Column(name = "subcategory_id")
 	private Long subcategoryId;
 
-	@Column(name = "cover_image_url", columnDefinition = "TEXT")
+	@Column(name = "cover_image_url", length = 2000)
 	private String coverImageUrl;
 
 	@JdbcTypeCode(SqlTypes.JSON)
-	@Column(name = "gallery_urls", columnDefinition = "jsonb")
+	@Column(name = "gallery_urls")
 	private List<String> galleryUrls;
 
-	@Column(name = "video_url", columnDefinition = "TEXT")
+	@Column(name = "video_url", length = 2000)
 	private String videoUrl;
 
 	@Column(name = "video_type", length = 20)
@@ -79,7 +79,7 @@ public class Post {
 	private Long issueId;
 
 	@JdbcTypeCode(SqlTypes.JSON)
-	@Column(columnDefinition = "jsonb")
+	@Column(name = "tags")
 	private List<String> tags;
 
 	@Column(name = "published_at")
@@ -90,7 +90,7 @@ public class Post {
 	private int commentCount = 0;
 
 	@JdbcTypeCode(SqlTypes.JSON)
-	@Column(name = "reaction_counts", columnDefinition = "jsonb")
+	@Column(name = "reaction_counts")
 	private Map<String, Integer> reactionCounts;
 
 	@Column(name = "quote_author", length = 255)
@@ -99,7 +99,7 @@ public class Post {
 	@Column(name = "quote_source", length = 500)
 	private String quoteSource;
 
-	@Column(name = "game_url", columnDefinition = "TEXT")
+	@Column(name = "game_url", length = 2000)
 	private String gameUrl;
 
 	@Column(name = "game_type", length = 10)

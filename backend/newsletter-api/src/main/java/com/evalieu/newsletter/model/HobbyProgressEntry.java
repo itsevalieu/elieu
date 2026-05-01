@@ -43,18 +43,18 @@ public class HobbyProgressEntry {
 	@Column(name = "entry_date", nullable = false)
 	private LocalDate entryDate;
 
-	@Column(columnDefinition = "TEXT")
+	@Column(length = 10000)
 	private String note;
 
 	@Column(nullable = false)
 	@Builder.Default
 	private boolean milestone = false;
 
-	@Column(name = "photo_url", columnDefinition = "TEXT")
+	@Column(name = "photo_url", length = 2000)
 	private String photoUrl;
 
 	@JdbcTypeCode(SqlTypes.JSON)
-	@Column(columnDefinition = "jsonb")
+	@Column(name = "metadata")
 	private Map<String, Object> metadata;
 
 	@Column(name = "created_at", nullable = false)

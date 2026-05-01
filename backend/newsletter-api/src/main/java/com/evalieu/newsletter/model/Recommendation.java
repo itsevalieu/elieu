@@ -31,7 +31,7 @@ public class Recommendation {
 	@Column(nullable = false)
 	private String title;
 
-	@Column(columnDefinition = "TEXT")
+	@Column(length = 5000)
 	private String note;
 
 	@Column(name = "submitted_by", length = 100)

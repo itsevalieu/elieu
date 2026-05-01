@@ -34,7 +34,7 @@ public class Comment {
 	@Column(name = "author_email", nullable = false)
 	private String authorEmail;
 
-	@Column(nullable = false, columnDefinition = "TEXT")
+	@Column(nullable = false, length = 5000)
 	private String body;
 
 	@Column(nullable = false, length = 20)

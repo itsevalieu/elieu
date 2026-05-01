@@ -40,10 +40,35 @@ const fontMono = JetBrains_Mono({
   variable: "--font-mono",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://newsletter.evalieu.com";
+
 export const metadata: Metadata = {
-  title: "The Eva Times",
+  title: {
+    default: "The Eva Times",
+    template: "%s — The Eva Times",
+  },
   description:
     "A personal newsletter: essays, projects, tracking, recipes, and more — newspaper-style editions from Eva.",
+  metadataBase: new URL(SITE_URL),
+  openGraph: {
+    type: "website",
+    siteName: "The Eva Times",
+    title: "The Eva Times",
+    description: "Essays, projects, tracking, recipes, and more — newspaper-style editions.",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Eva Times",
+    description: "Essays, projects, tracking, recipes, and more.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: SITE_URL,
+  },
 };
 
 export default function RootLayout({

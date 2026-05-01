@@ -42,11 +42,11 @@ public class Recipe {
 	private String slug;
 
 	@JdbcTypeCode(SqlTypes.JSON)
-	@Column(columnDefinition = "jsonb", nullable = false)
+	@Column(nullable = false)
 	private List<String> ingredients;
 
 	@JdbcTypeCode(SqlTypes.JSON)
-	@Column(columnDefinition = "jsonb", nullable = false)
+	@Column(nullable = false)
 	private List<String> steps;
 
 	@Column(name = "cook_time", length = 50)
@@ -54,7 +54,7 @@ public class Recipe {
 
 	private Short rating;
 
-	@Column(name = "photo_url", columnDefinition = "TEXT")
+	@Column(name = "photo_url", length = 2000)
 	private String photoUrl;
 
 	@Column(name = "date_made")

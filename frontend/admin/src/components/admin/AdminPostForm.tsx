@@ -9,6 +9,8 @@ import useSWR from 'swr';
 import { z } from 'zod';
 
 import { GameFileUpload } from '@/components/admin/GameFileUpload';
+import { ImageUpload } from '@/components/admin/ImageUpload';
+import { RichTextEditor } from '@/components/admin/RichTextEditor';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
@@ -225,12 +227,10 @@ export function AdminPostForm({ postId, initialPost }: AdminPostFormProps) {
 
       <div className="grid gap-6 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
         <Input label="Title" required {...register('title')} error={errors.title?.message} />
-        <Textarea
+        <RichTextEditor
           label="Body"
-          required
-          rows={16}
-          className="min-h-[12rem] font-mono text-sm"
-          {...register('body')}
+          value={watch('body')}
+          onChange={(md) => setValue('body', md, { shouldValidate: true })}
           error={errors.body?.message}
         />
         <Textarea label="Excerpt" rows={4} {...register('excerpt')} error={errors.excerpt?.message} />
@@ -294,7 +294,11 @@ export function AdminPostForm({ postId, initialPost }: AdminPostFormProps) {
         </div>
 
         <Input label="Tags (comma-separated)" {...register('tags')} error={errors.tags?.message} />
-        <Input label="Cover image URL" type="url" {...register('coverImageUrl')} error={errors.coverImageUrl?.message} />
+        <ImageUpload
+          label="Cover image"
+          value={watch('coverImageUrl') ?? ''}
+          onChange={(url) => setValue('coverImageUrl', url)}
+        />
 
         <div className="space-y-2">
           <p className="text-sm font-medium text-zinc-800">Gallery URLs</p>

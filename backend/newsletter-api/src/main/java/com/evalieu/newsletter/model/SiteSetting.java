@@ -21,6 +21,6 @@ public class SiteSetting {
 	@Column(name = "key", length = 100)
 	private String key;
 
-	@Column(nullable = false, columnDefinition = "TEXT")
+	@Column(nullable = false, length = 5000)
 	private String value;
 }

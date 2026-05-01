@@ -17,7 +17,7 @@ public class Achievement {
 	@Column(nullable = false)
 	private String title;
 
-	@Column(columnDefinition = "TEXT")
+	@Column(length = 5000)
 	private String context;
 
 	@Column(name = "achievement_date", nullable = false)

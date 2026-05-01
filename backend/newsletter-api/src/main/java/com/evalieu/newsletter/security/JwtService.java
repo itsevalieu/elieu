@@ -31,6 +31,9 @@ public class JwtService {
     @Value("${jwt.secure-cookie:false}")
     private boolean secureCookie;
 
+    @Value("${jwt.cookie-same-site:Strict}")
+    private String cookieSameSite;
+
     private SecretKey signingKey;
 
     @PostConstruct
@@ -92,7 +95,7 @@ public class JwtService {
         return ResponseCookie.from(ACCESS_COOKIE, token)
             .httpOnly(true)
             .secure(secureCookie)
-            .sameSite("Strict")
+            .sameSite(cookieSameSite)
             .path("/")
             .maxAge(Duration.ofHours(1))
             .build();
@@ -102,7 +105,7 @@ public class JwtService {
         return ResponseCookie.from(REFRESH_COOKIE, token)
             .httpOnly(true)
             .secure(secureCookie)
-            .sameSite("Strict")
+            .sameSite(cookieSameSite)
             .path("/")
             .maxAge(Duration.ofDays(7))
             .build();
@@ -112,14 +115,14 @@ public class JwtService {
         ResponseCookie clearedAccess = ResponseCookie.from(ACCESS_COOKIE, "")
             .httpOnly(true)
             .secure(secureCookie)
-            .sameSite("Strict")
+            .sameSite(cookieSameSite)
             .path("/")
             .maxAge(Duration.ofSeconds(0))
             .build();
         ResponseCookie clearedRefresh = ResponseCookie.from(REFRESH_COOKIE, "")
             .httpOnly(true)
             .secure(secureCookie)
-            .sameSite("Strict")
+            .sameSite(cookieSameSite)
             .path("/")
             .maxAge(Duration.ofSeconds(0))
             .build();

@@ -21,6 +21,11 @@ out/
 .idea/
 *.iml
 
+# ── PWA / Serwist ──────────────────────────────────────────────────────
+frontend/admin/public/sw.js
+frontend/admin/public/sw.js.map
+frontend/admin/public/swe-worker-*.js
+
 # ── macOS ─────────────────────────────────────────────────────────────
 .DS_Store
 
