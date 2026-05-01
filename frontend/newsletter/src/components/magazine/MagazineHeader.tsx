@@ -1,6 +1,3 @@
-"use client";
-
-import { LayoutToggle } from "@/components/shared/LayoutToggle";
 import styles from "./MagazineHeader.module.scss";
 
 export type MagazineHeaderProps = {
@@ -26,9 +23,6 @@ export function MagazineHeader({ issueLine }: MagazineHeaderProps) {
           {issueLine ? (
             <p className={styles.issueLine}>{issueLine}</p>
           ) : null}
-        </div>
-        <div className={styles.actions}>
-          <LayoutToggle />
         </div>
       </div>
     </header>

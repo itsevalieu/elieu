@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { LayoutToggle } from "@/components/shared/LayoutToggle";
 import styles from "./Masthead.module.scss";
 
 function formatIssueDate(): string {
@@ -19,9 +18,6 @@ export type MastheadProps = {
 export function Masthead({ issueLine }: MastheadProps) {
   return (
     <header className={styles.masthead}>
-      <div className={styles.topRow}>
-        <LayoutToggle />
-      </div>
       <Link href="/" className={styles.homeLink}>
         <h1 className={styles.title}>THE EVA TIMES</h1>
       </Link>

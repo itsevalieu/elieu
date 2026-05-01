@@ -42,3 +42,11 @@
   padding-left: 0;
   padding-right: 0;
 }
+
+.layoutToggleRow {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-rule-light, #ddd);
+}
