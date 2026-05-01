@@ -1,5 +1,7 @@
 package com.evalieu.newsletter.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,6 +33,7 @@ public class Subcategory {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id", insertable = false, updatable = false)
+	@JsonIgnore
 	private Category category;
 
 	@Column(nullable = false, length = 100)
