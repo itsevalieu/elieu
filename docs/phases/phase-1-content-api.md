@@ -1,6 +1,6 @@
 # Phase 1 — Content API Foundation
 
-**Status:** `[ ]` Not started
+**Status:** `[x]` Complete
 **Repo areas:** `backend/newsletter-api/`, `backend/portfolio-api/`
 
 ## Goal
