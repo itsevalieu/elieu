@@ -94,6 +94,16 @@ public class IssueService {
 		auditLogService.record("ISSUE_DELETE", "Issue", id, Map.of("slug", issue.getSlug()));
 	}
 
+	@Transactional(readOnly = true)
+	public Issue requirePublishedById(Long id) {
+		Issue issue = issueRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Issue not found: " + id));
+		if (!"published".equalsIgnoreCase(issue.getStatus())) {
+			throw new IllegalArgumentException("Issue must be published before sending the newsletter");
+		}
+		return issue;
+	}
+
 	private static String slugFromTitle(String title) {
 		String raw = title == null ? "" : title.toLowerCase(Locale.ROOT).trim().replaceAll("\\s+", "-");
 		raw = raw.replaceAll("[^-a-z0-9]", "");

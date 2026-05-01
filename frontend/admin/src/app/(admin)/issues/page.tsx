@@ -50,6 +50,10 @@ export default function IssuesAdminPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<IssueRow | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [sendingId, setSendingId] = useState<number | null>(null);
+  const [sendResult, setSendResult] = useState<{ sent: number } | null>(null);
+  const [sendBusy, setSendBusy] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
 
   const revalidateIssues = useCallback(
     () => void mutate((k: string | undefined) => typeof k === 'string' && k.includes('/api/admin/issues')),
@@ -124,6 +128,25 @@ export default function IssuesAdminPage() {
     await revalidateIssues();
   }
 
+  function openSendDialog(id: number) {
+    setSendError(null);
+    setSendingId(id);
+  }
+
+  async function confirmSendNewsletter(id: number) {
+    setSendBusy(true);
+    setSendError(null);
+    try {
+      const body = await newsletterApi.post<{ sent: number }>(`/api/admin/issues/${id}/send`, {});
+      setSendingId(null);
+      setSendResult(body);
+    } catch (e) {
+      setSendError(e instanceof Error ? e.message : 'Send failed.');
+    } finally {
+      setSendBusy(false);
+    }
+  }
+
   const columns: DataTableColumn<IssueRow>[] = [
     { id: 'title', header: 'Title', cell: (row) => <span className="font-medium">{row.title}</span> },
     {
@@ -145,6 +168,11 @@ export default function IssuesAdminPage() {
           <Button type="button" variant="secondary" size="sm" onClick={() => openEdit(row)}>
             Edit
           </Button>
+          {row.status === 'published' ? (
+            <Button type="button" variant="secondary" size="sm" onClick={() => openSendDialog(row.id)}>
+              Send newsletter
+            </Button>
+          ) : null}
           <Button type="button" variant="danger" size="sm" onClick={() => setDeletingId(row.id)}>
             Delete
           </Button>
@@ -228,6 +256,46 @@ export default function IssuesAdminPage() {
           </Button>
           <Button type="button" variant="danger" onClick={() => deletingId != null && void confirmDelete(deletingId)}>
             Delete
+          </Button>
+        </div>
+      </Modal>
+
+      <Modal
+        open={sendingId != null}
+        title="Send newsletter?"
+        onClose={() => {
+          if (!sendBusy) {
+            setSendingId(null);
+            setSendError(null);
+          }
+        }}
+      >
+        <p className="text-sm text-zinc-600">
+          Email this issue to all confirmed subscribers. This sends through Amazon SES.
+        </p>
+        {sendError ? <p className="mt-2 text-sm text-red-700">{sendError}</p> : null}
+        <div className="mt-6 flex justify-end gap-2">
+          <Button type="button" variant="secondary" disabled={sendBusy} onClick={() => setSendingId(null)}>
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            disabled={sendBusy}
+            onClick={() => sendingId != null && void confirmSendNewsletter(sendingId)}
+          >
+            {sendBusy ? 'Sending…' : 'Send'}
+          </Button>
+        </div>
+      </Modal>
+
+      <Modal open={sendResult != null} title="Newsletter sent" onClose={() => setSendResult(null)}>
+        <p className="text-sm text-zinc-600">
+          Successfully sent <strong>{sendResult?.sent ?? 0}</strong> email
+          {sendResult?.sent === 1 ? '' : 's'}.
+        </p>
+        <div className="mt-6 flex justify-end">
+          <Button type="button" onClick={() => setSendResult(null)}>
+            OK
           </Button>
         </div>
       </Modal>

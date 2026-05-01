@@ -1,0 +1,47 @@
+.main {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.card {
+  max-width: 26rem;
+  width: 100%;
+  padding: 1.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e4e4e7;
+  background: #fafafa;
+}
+
+.h1 {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.p {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #3f3f46;
+}
+
+.ok {
+  color: #15803d;
+}
+
+.err {
+  color: #b91c1c;
+}
+
+.linkRow {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.linkRow a {
+  color: #2563eb;
+  text-decoration: underline;
+}

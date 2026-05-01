@@ -7,6 +7,7 @@ import { CategoryStrip } from "@/components/newspaper/CategoryStrip";
 import { NewspaperGrid } from "@/components/newspaper/NewspaperGrid";
 import { MagazineHeader } from "@/components/magazine/MagazineHeader";
 import { MagazineFrontPageGrid } from "@/components/magazine/MagazineFrontPageGrid";
+import { SubscribeForm } from "@/components/engagement/SubscribeForm";
 import styles from "./FrontPageContent.module.scss";
 
 export type FrontPageContentProps = {
@@ -31,6 +32,9 @@ export function FrontPageContent({
         ) : (
           <p className={styles.empty}>No editions available yet.</p>
         )}
+        <footer className={styles.subscribeFooter}>
+          <SubscribeForm compactHeading />
+        </footer>
       </div>
     );
   }
@@ -44,6 +48,9 @@ export function FrontPageContent({
       ) : (
         <p className={styles.empty}>No editions available yet.</p>
       )}
+      <footer className={styles.subscribeFooter}>
+        <SubscribeForm compactHeading />
+      </footer>
     </>
   );
 }

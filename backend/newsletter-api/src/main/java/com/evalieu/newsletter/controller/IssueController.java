@@ -17,10 +17,13 @@ import com.evalieu.newsletter.dto.PagedResponse;
 import com.evalieu.newsletter.exception.ResourceNotFoundException;
 import com.evalieu.newsletter.model.Issue;
 import com.evalieu.newsletter.service.IssueService;
+import com.evalieu.newsletter.service.NewsletterSendService;
 import com.evalieu.newsletter.service.PostService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,7 +32,7 @@ public class IssueController extends PagingControllerSupport {
 	private final IssueService issueService;
 	private final PostService postService;
 	private final PostResponseMapper postResponseMapper;
-
+	private final NewsletterSendService newsletterSendService;
 	@GetMapping("/api/admin/issues")
 	public PagedResponse<IssueResponse> listAllAdmin(
 			@RequestParam(defaultValue = "0") int page,
@@ -68,6 +71,11 @@ public class IssueController extends PagingControllerSupport {
 	public ResponseEntity<Void> deleteAdmin(@PathVariable Long id) {
 		issueService.delete(id);
 		return ResponseEntity.noContent().build();
+	}
+
+	@PostMapping("/api/admin/issues/{id}/send")
+	public Map<String, Integer> sendNewsletter(@PathVariable Long id) {
+		return Map.of("sent", newsletterSendService.sendIssue(id));
 	}
 
 	private IssueResponse toIssueResponse(Issue issue, boolean includePosts) {

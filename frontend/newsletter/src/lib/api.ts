@@ -149,6 +149,31 @@ async function engagementFetch(path: string, init?: RequestInit): Promise<Respon
   return res;
 }
 
+export async function subscribe(
+  email: string,
+  options?: { honeypot?: string; source?: string },
+): Promise<void> {
+  const res = await engagementFetch("/api/subscribe", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email,
+      honeypot: options?.honeypot?.trim() ?? "",
+      source: options?.source ?? "website",
+    }),
+  });
+  if (!res.ok) {
+    let msg = `Subscribe failed (${res.status})`;
+    try {
+      const text = await res.text();
+      if (text.trim()) msg = text.trim();
+    } catch {
+      /* keep default */
+    }
+    throw new Error(msg);
+  }
+}
+
 /** Public comments for a post (client or server fetch, no ISR cache). */
 export async function getComments(
   postId: number,

@@ -1,6 +1,7 @@
 package com.evalieu.newsletter.controller;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,6 +41,13 @@ public class SubscriberController extends PagingControllerSupport {
 			return ResponseEntity.badRequest().body("Invalid or expired confirmation link");
 		}
 		return ResponseEntity.ok("Subscription confirmed");
+	}
+
+	/** RFC 8058 one-click unsubscribe (POST with token often in URL query string). */
+	@PostMapping(path = "/api/unsubscribe", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public ResponseEntity<String> unsubscribePost(@RequestParam(required = false) String token) {
+		subscriberService.unsubscribe(token != null ? token : "");
+		return ResponseEntity.ok("Unsubscribed");
 	}
 
 	@GetMapping("/api/unsubscribe")

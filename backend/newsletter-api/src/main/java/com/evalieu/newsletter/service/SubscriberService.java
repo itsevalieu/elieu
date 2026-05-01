@@ -15,12 +15,15 @@ import com.evalieu.newsletter.model.Subscriber;
 import com.evalieu.newsletter.repository.SubscriberRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SubscriberService {
 
 	private final SubscriberRepository subscriberRepository;
+	private final EmailService emailService;
 
 	@Transactional
 	public void subscribe(String email, String source) {
@@ -37,11 +40,16 @@ public class SubscriberService {
 				.source(source)
 				.status("pending")
 				.confirmationToken(java.util.UUID.randomUUID().toString())
-				.unsubscribeToken(java.util.UUID.randomUUID().toString())
+				.unsubscribeToken(null)
 				.tokenExpiresAt(now.plus(Duration.ofHours(24)))
 				.createdAt(now)
 				.build();
 		subscriberRepository.save(subscriber);
+		try {
+			emailService.sendConfirmation(normalized, subscriber.getConfirmationToken());
+		} catch (Exception ex) {
+			log.warn("Could not send confirmation email to {}: {}", normalized, ex.getMessage());
+		}
 	}
 
 	@Transactional
@@ -57,6 +65,7 @@ public class SubscriberService {
 					s.setConfirmationToken(null);
 					s.setTokenExpiresAt(null);
 					s.setConfirmedAt(Instant.now());
+					s.setUnsubscribeToken(java.util.UUID.randomUUID().toString());
 					subscriberRepository.save(s);
 					return true;
 				})

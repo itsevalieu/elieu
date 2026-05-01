@@ -1,6 +1,6 @@
 # Phase 7 — Newsletter Email & Subscriber Management
 
-**Status:** `[ ]` Not started
+**Status:** `[x]` Complete
 **Repo areas:** `backend/newsletter-api/`, `frontend/newsletter/`, `frontend/admin/`
 **Depends on:** Phase 1, Phase 4
 
