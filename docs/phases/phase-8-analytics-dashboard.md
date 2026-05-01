@@ -1,7 +1,7 @@
 # Phase 8 — Analytics, Ads, Ko-fi & Admin Dashboard
 
-**Status:** `[ ]` Not started  
-**Repo areas:** `frontend/newsletter/`, `frontend/portfolio/`, `frontend/admin/`, `backend/newsletter-api/`  
+**Status:** `[ ]` Not started
+**Repo areas:** `frontend/newsletter/`, `frontend/portfolio/`, `frontend/admin/`, `backend/newsletter-api/`
 **Depends on:** Phase 4, Phase 6, Phase 7
 
 ## Goal
@@ -10,79 +10,268 @@ Full admin dashboard with content metrics, subscriber analytics, system health m
 
 ---
 
+## Architecture
+
+```mermaid
+flowchart TD
+    subgraph dashboard [frontend/admin — Dashboard /]
+        CO[Content Overview Cards]
+        PP[Post Performance Table]
+        EF[Engagement Feed]
+        SM[Subscriber Metrics]
+        SH[System Health Panel]
+    end
+
+    subgraph log_pages [frontend/admin — Log Pages]
+        SL[/system-logs — Log Viewer]
+        AL[/audit-log — Audit Viewer]
+    end
+
+    subgraph api [newsletter-api]
+        STATS["/api/admin/stats/*"]
+        HEALTH["/api/health"]
+        LOGS_API["/api/admin/system-logs"]
+        AUDIT_API["/api/admin/audit-log"]
+    end
+
+    subgraph external [External Services]
+        GA[Google Analytics 4]
+        ADS[Google AdSense]
+        KOFI[Ko-fi Widget]
+    end
+
+    CO --> STATS
+    PP --> STATS
+    EF --> STATS
+    SM --> STATS
+    SH --> HEALTH
+    SL --> LOGS_API
+    AL --> AUDIT_API
+```
+
+## Technical Choices
+
+| Concern | Choice | Rationale |
+|---------|--------|-----------|
+| GA4 integration | `@next/third-parties` Google tag manager or direct `gtag.js` via `next/script` | Official Next.js integration; tree-shakeable |
+| Custom events | `gtag('event', ...)` calls from client components | Standard GA4 custom events; no additional library |
+| AdSense | `<ins class="adsbygoogle">` in dedicated `<AdSlot>` component | Standard AdSense embed; conditional rendering via admin setting |
+| Ko-fi | Ko-fi button widget (JavaScript embed) + floating button | No backend; Ko-fi handles payment |
+| Dashboard charts | Recharts (`AreaChart`, `BarChart`, `PieChart`) | Lightweight, composable, good for sparklines and time-series |
+| Dashboard data | `/api/admin/stats/overview`, `/api/admin/stats/posts`, `/api/admin/stats/engagement` | Dedicated aggregation endpoints; cached for 5 minutes |
+| Real-time updates | `useSWR` with `refreshInterval` | Engagement feed polls every 60s; health panel every 30s |
+
+---
+
 ## Tasks
 
-### Google Analytics 4
+### 1. Admin Stats Endpoints — Backend
 
-- [ ] Create GA4 property and get Measurement ID
-- [ ] Add GA4 script to `frontend/newsletter` and `frontend/portfolio` via Next.js `Script` component
-- [ ] Custom event tracking:
-  - [ ] Layout toggle (newspaper ↔ magazine)
-  - [ ] Category page click
-  - [ ] Excerpt → article click-through
-  - [ ] Share button click (by type: copy, native, social)
-  - [ ] Reaction submitted
-  - [ ] Comment submitted
-  - [ ] Subscribe form submit
-  - [ ] Ko-fi button click
-- [ ] Privacy: respect `prefers-reduced-tracking`, add cookie consent notice if required
+- [ ] **`StatsController.java`** — new controller in newsletter-api:
 
-### Google AdSense
+```java
+@GetMapping("/api/admin/stats/overview")
+public OverviewStats getOverview() {
+    return OverviewStats.builder()
+        .totalPublished(postRepo.countByStatus("published"))
+        .totalDrafts(postRepo.countByStatus("draft"))
+        .totalArchived(postRepo.countByStatus("archived"))
+        .publishedThisMonth(postRepo.countPublishedSince(startOfMonth()))
+        .publishedLastMonth(postRepo.countPublishedBetween(startOfLastMonth(), startOfMonth()))
+        .totalSubscribers(subscriberRepo.countByStatus("confirmed"))
+        .pendingComments(commentRepo.countByStatus("pending"))
+        .build();
+}
 
-- [ ] Apply for AdSense and add verification meta tag
-- [ ] Ad slot components built into both layout grids:
-  - [ ] Sidebar ad slot (newspaper layout)
-  - [ ] Between-section ad slot (both layouts)
-  - [ ] Article page footer ad slot
-- [ ] `show_ads` toggle per issue in admin — can disable ads for specific issues
+@GetMapping("/api/admin/stats/posts")
+public PagedResponse<PostStats> getPostStats(
+    @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "20") int size,
+    @RequestParam(required = false) String sortBy,    // views, reactions, comments
+    @RequestParam(required = false) String category,
+    @RequestParam(required = false) String dateRange   // 7d, 30d, 90d, all
+) { ... }
 
-### Ko-fi
+@GetMapping("/api/admin/stats/engagement")
+public List<EngagementEvent> getRecentEngagement(
+    @RequestParam(defaultValue = "50") int limit
+) {
+    // Union of: recent pending comments + recent reactions + recent subscribers
+    // Ordered by timestamp descending
+}
 
-- [ ] Ko-fi embed widget in newsletter sidebar and article page footer ("Support this newsletter")
-- [ ] Optional Ko-fi goal widget on front page
-- [ ] `ko_fi_url` setting in admin Settings page — no code change needed to update
+@GetMapping("/api/admin/stats/subscribers")
+public SubscriberStats getSubscriberStats() {
+    return SubscriberStats.builder()
+        .totalConfirmed(subscriberRepo.countByStatus("confirmed"))
+        .weeklyGrowth(subscriberRepo.countConfirmedSince(daysAgo(7)))
+        .monthlyGrowth(subscriberRepo.countConfirmedSince(daysAgo(30)))
+        .recentSignups(subscriberRepo.findTop10ByStatusOrderByCreatedAtDesc("confirmed"))
+        .build();
+}
+```
 
-### Admin Dashboard (`/` in `frontend/admin`)
+- [ ] **DTOs**: `OverviewStats`, `PostStats`, `EngagementEvent`, `SubscriberStats`
 
-**Content Overview Cards**
-- [ ] Total posts (published / draft / archived)
-- [ ] Posts this month vs last month
-- [ ] Drafts in progress with last-edited time
-- [ ] Upcoming/scheduled posts
+---
 
-**Post Performance Table**
-- [ ] Columns: title, category, views, unique visitors, reactions (emoji breakdown on hover), comment count, shares, published date
-- [ ] Sortable by any column; filterable by category/status/date range
-- [ ] 30-day sparkline per post
-- [ ] Click-through rate: excerpt impressions vs article opens
+### 2. Admin Dashboard — Frontend (`frontend/admin/src/app/page.tsx`)
 
-**Engagement Feed**
-- [ ] Live activity log — new comments (pending), new reactions, new subscribers — reverse chronological
-- [ ] Quick-action buttons: approve comment, view post
-- [ ] Polls every 60s
+- [ ] **Content Overview Cards** — grid of stat cards:
+  - Published / Drafts / Archived counts with icons
+  - "Published this month" with comparison to last month (green arrow up or red arrow down)
+  - Pending comments count (links to moderation queue)
+  - Uses `useSWR('/api/admin/stats/overview', { refreshInterval: 300000 })`
 
-**Subscriber Metrics**
-- [ ] Total confirmed subscribers + growth chart (weekly/monthly)
-- [ ] Recent signups with source page
-- [ ] Unsubscribe rate per issue send
-- [ ] Email open rate + click rate per issue
+- [ ] **Post Performance Table** — `@tanstack/react-table`:
+  - Columns: title, category, views, unique visitors, reactions total, top emoji, comment count, shares, published date
+  - Sort by clicking column headers
+  - Filter toolbar: category dropdown, date range selector, status dropdown
+  - Each row expandable to show emoji breakdown
+  - 30-day view sparkline per post (Recharts `<Sparkline>` with `<AreaChart>`)
 
-**System Health Panel**
-- [ ] Live status tiles for: newsletter-api, portfolio-api, PostgreSQL, S3, SES
-- [ ] Powered by `GET /api/health` on each service — green/yellow/red
-- [ ] API error rate chart (errors/hour, last 7 days, by endpoint)
-- [ ] SES bounce rate + complaint rate gauges with threshold warnings
+- [ ] **Engagement Feed** — real-time activity list:
 
-**System Log Viewer (`/system-logs`)**
-- [ ] Filterable by severity (ERROR/WARN/INFO), service, time range
-- [ ] Stack trace expandable inline
-- [ ] Clear old logs button (manual, admin only)
-- [ ] Email alert setting — configure errors/hour threshold; alert fires to admin email via SES
+```typescript
+function EngagementFeed() {
+  const { data } = useSWR('/api/admin/stats/engagement', { refreshInterval: 60000 });
 
-**Audit Log Viewer (`/audit-log`)**
-- [ ] Full history of every admin action: timestamp, action type, entity, detail
-- [ ] Searchable by action type, entity, date range
-- [ ] Read-only — no deletion of audit records
+  return (
+    <ul>
+      {data?.map(event => (
+        <li key={event.id}>
+          {event.type === 'comment' && <CommentEvent event={event} />}
+          {event.type === 'reaction' && <ReactionEvent event={event} />}
+          {event.type === 'subscriber' && <SubscriberEvent event={event} />}
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+  - Comment events: "New comment on [Post Title] by [Author]" + approve button
+  - Reaction events: "[Emoji] on [Post Title]"
+  - Subscriber events: "New subscriber from [source page]"
+
+- [ ] **Subscriber Metrics** — Recharts `<AreaChart>`:
+  - X axis: weeks or months
+  - Y axis: cumulative subscriber count
+  - Tooltip: new subscribers that period, unsubscribe rate
+
+- [ ] **System Health Panel** — grid of status tiles:
+
+```typescript
+function HealthPanel() {
+  const { data } = useSWR('/api/health', { refreshInterval: 30000 });
+  const { data: portfolioHealth } = useSWR('http://localhost:8080/api/health', { refreshInterval: 30000 });
+
+  return (
+    <div className="grid grid-cols-5 gap-4">
+      <StatusTile label="Newsletter API" status={data?.status} />
+      <StatusTile label="Portfolio API" status={portfolioHealth?.status} />
+      <StatusTile label="PostgreSQL" status={data?.db} />
+      <StatusTile label="S3" status={data?.s3} />
+      <StatusTile label="SES" status={data?.ses} />
+    </div>
+  );
+}
+```
+
+  - Green = healthy, yellow = degraded, red = down
+
+---
+
+### 3. System Log Viewer — `/system-logs`
+
+- [ ] DataTable with columns: severity (color-coded badge), service, message (truncated), endpoint, timestamp
+- [ ] Filter bar: severity dropdown, service dropdown, date range picker
+- [ ] Click row to expand: full message + stack trace
+- [ ] **Error rate chart** — Recharts `<BarChart>`: errors per hour, last 7 days, colored by endpoint
+- [ ] **Email alert config**: threshold input (errors/hour) + admin email input; saves to site_settings
+
+---
+
+### 4. Audit Log Viewer — `/audit-log`
+
+- [ ] DataTable: timestamp, action (badge), entity type, entity ID (link to entity), detail JSON
+- [ ] Search: text search across action and entity type
+- [ ] Filter: action type dropdown, entity type dropdown, date range
+- [ ] Read-only — no delete actions
+
+---
+
+### 5. Google Analytics 4 — Public Sites
+
+- [ ] **`frontend/newsletter/src/app/layout.tsx`** and **`frontend/portfolio/src/app/layout.tsx`**:
+
+```typescript
+import { GoogleAnalytics } from '@next/third-parties/google';
+
+export default function Layout({ children }) {
+  return (
+    <html>
+      <body>{children}</body>
+      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+    </html>
+  );
+}
+```
+
+- [ ] **Custom events** — `frontend/newsletter/src/lib/analytics.ts`:
+
+```typescript
+export function trackEvent(name: string, params?: Record<string, string | number>) {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', name, params);
+  }
+}
+
+// Usage:
+trackEvent('layout_toggle', { from: 'newspaper', to: 'magazine' });
+trackEvent('share_click', { type: 'copy', postSlug: 'my-post' });
+trackEvent('reaction', { emoji: '❤️', postSlug: 'my-post' });
+trackEvent('subscribe_submit', { source: 'sidebar' });
+```
+
+---
+
+### 6. Google AdSense — Public Sites
+
+- [ ] **`AdSlot.tsx`** component — `frontend/newsletter/src/components/shared/AdSlot.tsx`:
+
+```typescript
+export function AdSlot({ slot, format = 'auto' }: { slot: string; format?: string }) {
+  useEffect(() => {
+    try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch {}
+  }, []);
+
+  return (
+    <ins className="adsbygoogle"
+      style={{ display: 'block' }}
+      data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT}
+      data-ad-slot={slot}
+      data-ad-format={format}
+      data-full-width-responsive="true"
+    />
+  );
+}
+```
+
+- [ ] Placement in newspaper layout: sidebar (1 slot), between sections (1 slot)
+- [ ] Placement in magazine layout: between category strips (1 slot)
+- [ ] Article page: footer (1 slot)
+- [ ] `show_ads` setting per issue — admin can toggle off for specific issues
+
+---
+
+### 7. Ko-fi Widget
+
+- [ ] **`KofiWidget.tsx`** — `frontend/newsletter/src/components/shared/KofiWidget.tsx`:
+  - Fetches `ko_fi_url` from site settings (or hardcoded initially)
+  - Renders Ko-fi button embed script
+  - Placed in newsletter sidebar and article footer
+  - Optional goal widget on front page (enabled via admin setting)
 
 ---
 
