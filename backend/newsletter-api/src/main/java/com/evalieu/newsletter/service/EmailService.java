@@ -2,9 +2,11 @@ package com.evalieu.newsletter.service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -13,7 +15,6 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import com.evalieu.newsletter.config.SesConfig;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.ses.SesClient;
@@ -22,21 +23,36 @@ import software.amazon.awssdk.services.ses.model.SendRawEmailRequest;
 import software.amazon.awssdk.services.ses.model.SesException;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class EmailService {
 
 	private static final Pattern CRLF = Pattern.compile("\\r?\\n");
 
 	private final SesConfig sesConfig;
-	private final SesClient sesClient;
+	private final Optional<SesClient> sesClient;
 	private final SpringTemplateEngine templateEngine;
 	private final SiteSettingService siteSettingService;
+
+	@Autowired
+	public EmailService(SesConfig sesConfig, Optional<SesClient> sesClient,
+			SpringTemplateEngine templateEngine, SiteSettingService siteSettingService) {
+		this.sesConfig = sesConfig;
+		this.sesClient = sesClient;
+		this.templateEngine = templateEngine;
+		this.siteSettingService = siteSettingService;
+		if (sesClient.isEmpty()) {
+			log.warn("SES client not configured — email sending is disabled (set aws.ses.region to enable)");
+		}
+	}
 
 	@Value("${app.newsletter.public-base-url:https://newsletter.evalieu.com}")
 	private String publicBaseUrl;
 
 	public void sendConfirmation(String toEmail, String confirmToken) {
+		if (sesClient.isEmpty()) {
+			log.warn("Email sending disabled — skipping confirmation to {}", mask(toEmail));
+			return;
+		}
 		String confirmationUrl = publicBaseUrl.replaceAll("/+$", "") + "/subscribe/confirm?token="
 				+ urlEncodeToken(confirmToken);
 		Context ctx = new Context();
@@ -57,7 +73,7 @@ public class EmailService {
 				.build();
 
 		try {
-			sesClient.sendRawEmail(req);
+			sesClient.get().sendRawEmail(req);
 			log.debug("Sent confirmation email to {}", mask(toEmail));
 		} catch (SesException e) {
 			String aws = e.awsErrorDetails() != null ? e.awsErrorDetails().errorMessage() : null;
@@ -74,6 +90,10 @@ public class EmailService {
 			String subject,
 			String htmlInnerContent,
 			String viewInBrowserUrl) {
+		if (sesClient.isEmpty()) {
+			log.warn("Email sending disabled — skipping newsletter to {}", mask(toEmail));
+			return;
+		}
 		Context ctx = new Context();
 		ctx.setVariable("publicationName", publicationName);
 		ctx.setVariable("innerContentHtml", sanitizeInlineHtml(htmlInnerContent));
@@ -95,7 +115,7 @@ public class EmailService {
 				.build();
 
 		try {
-			sesClient.sendRawEmail(req);
+			sesClient.get().sendRawEmail(req);
 			log.debug("Sent newsletter email to {}", mask(toEmail));
 		} catch (SesException e) {
 			String aws = e.awsErrorDetails() != null ? e.awsErrorDetails().errorMessage() : null;

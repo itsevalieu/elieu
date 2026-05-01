@@ -95,18 +95,14 @@ npx expo start
 
 The mobile app connects to `http://localhost:8081` in dev mode. On Android emulator, use `10.0.2.2` instead of `localhost` (configured in `mobile/lib/config.ts`).
 
-### Creating an admin user
+### Admin credentials
 
-The APIs don't seed an admin user. Create one manually after starting the newsletter-api:
+On `dev` and `docker` profiles, a default admin user is seeded automatically:
 
-```bash
-# Generate a BCrypt hash for your password
-# Then insert into the database:
-#   INSERT INTO admin_users (email, password_hash) VALUES ('you@example.com', '$2a...');
-#
-# With H2 dev profile, use the H2 console at /h2-console
-# With PostgreSQL, connect via psql or any client
-```
+- **Email:** `admin@evalieu.local`
+- **Password:** `REDACTED_DEV_PASSWORD`
+
+Sample categories, posts, hobbies, and an issue are also seeded on first startup.
 
 ## Environment Variables
 

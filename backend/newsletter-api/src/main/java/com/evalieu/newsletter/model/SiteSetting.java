@@ -18,9 +18,9 @@ import lombok.NoArgsConstructor;
 public class SiteSetting {
 
 	@Id
-	@Column(name = "key", length = 100)
+	@Column(name = "\"key\"", length = 100)
 	private String key;
 
-	@Column(nullable = false, length = 5000)
+	@Column(name = "\"value\"", nullable = false, length = 5000)
 	private String value;
 }

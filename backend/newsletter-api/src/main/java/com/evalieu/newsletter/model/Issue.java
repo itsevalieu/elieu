@@ -27,10 +27,10 @@ public class Issue {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(name = "\"month\"", nullable = false)
 	private short month;
 
-	@Column(nullable = false)
+	@Column(name = "\"year\"", nullable = false)
 	private short year;
 
 	@Column(nullable = false)
