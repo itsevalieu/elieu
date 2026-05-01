@@ -1,0 +1,108 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-bg);
+  border: 1px solid var(--color-rule);
+  border-radius: 6px;
+  overflow: hidden;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 28px rgba(17, 17, 17, 0.12);
+}
+
+.thumbWrap {
+  display: block;
+}
+
+.thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #f4f4f5;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.thumbPlaceholder {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: var(--spacing-md);
+  gap: var(--spacing-sm);
+}
+
+.badge {
+  align-self: flex-start;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+}
+
+.headline {
+  font-family: var(--font-headline);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.headlineLink {
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.headlineLink:hover {
+  color: var(--color-accent);
+}
+
+.excerpt {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  margin-top: auto;
+  padding-top: var(--spacing-xs);
+}
+
+.reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.emojiCount {
+  white-space: nowrap;
+}
+
+.comments {
+  margin-left: auto;
+}

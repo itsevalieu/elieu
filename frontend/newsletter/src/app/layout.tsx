@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Lora, Playfair_Display } from "next/font/google";
+import {
+  DM_Sans,
+  Inter,
+  JetBrains_Mono,
+  Lora,
+  Playfair_Display,
+} from "next/font/google";
 import "./globals.scss";
+import { Suspense } from "react";
+import { LayoutProvider } from "@/context/LayoutContext";
 
 /** Avoid prerender-time fetch to the API during `next build` when the backend is offline. */
 export const dynamic = "force-dynamic";
@@ -13,6 +21,16 @@ const fontHeadline = Playfair_Display({
 const fontBody = Lora({
   subsets: ["latin"],
   variable: "--font-body",
+});
+
+const fontInter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+const fontDmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-dm-sans",
 });
 
 const fontMono = JetBrains_Mono({
@@ -31,12 +49,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const fontVarsOnHtml = `${fontHeadline.variable} ${fontBody.variable} ${fontInter.variable} ${fontDmSans.variable}`;
+
   return (
-    <html lang="en">
-      <body
-        className={`${fontHeadline.variable} ${fontBody.variable} ${fontMono.variable}`}
-      >
-        {children}
+    <html lang="en" className={fontVarsOnHtml}>
+      <body className={fontMono.variable}>
+        <Suspense fallback={<>{children}</>}>
+          <LayoutProvider>{children}</LayoutProvider>
+        </Suspense>
       </body>
     </html>
   );

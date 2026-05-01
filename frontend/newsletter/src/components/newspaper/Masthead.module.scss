@@ -5,6 +5,12 @@
   margin-bottom: var(--spacing-lg);
 }
 
+.topRow {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-md);
+}
+
 .homeLink:hover .title {
   color: var(--color-accent);
 }

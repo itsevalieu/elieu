@@ -1,6 +1,6 @@
 # Phase 3 — Magazine Layout + Toggle
 
-**Status:** `[ ]` Not started
+**Status:** `[x]` Complete
 **Repo areas:** `frontend/newsletter/`
 **Depends on:** Phase 2
 

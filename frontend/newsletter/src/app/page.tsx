@@ -1,6 +1,4 @@
-import { Masthead } from "@/components/newspaper/Masthead";
-import { NewspaperGrid } from "@/components/newspaper/NewspaperGrid";
-import { CategoryStrip } from "@/components/newspaper/CategoryStrip";
+import { FrontPageContent } from "@/app/FrontPageContent";
 import {
   getCategories,
   getLatestIssue,
@@ -21,13 +19,11 @@ export default async function HomePage() {
 
   return (
     <main className={styles.shell}>
-      <Masthead issueLine={issueLine} />
-      <CategoryStrip categories={categories} />
-      {posts.length > 0 ? (
-        <NewspaperGrid posts={posts} />
-      ) : (
-        <p className={styles.empty}>No editions available yet.</p>
-      )}
+      <FrontPageContent
+        posts={posts}
+        categories={categories}
+        issueLine={issueLine}
+      />
     </main>
   );
 }
