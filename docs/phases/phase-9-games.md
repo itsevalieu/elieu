@@ -1,6 +1,6 @@
 # Phase 9 — Games Integration
 
-**Status:** `[ ]` Not started
+**Status:** `[x]` Complete
 **Repo areas:** `frontend/newsletter/`, `backend/newsletter-api/`
 **Depends on:** Phase 2, Phase 4
 

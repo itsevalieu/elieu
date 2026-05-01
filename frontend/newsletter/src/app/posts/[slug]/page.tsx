@@ -11,6 +11,7 @@ import { renderMarkdown } from "@/lib/markdown";
 import { leadExcerpt } from "@/lib/postDisplay";
 import { Masthead } from "@/components/newspaper/Masthead";
 import { VideoPlayer } from "@/components/VideoPlayer";
+import { GameEmbed } from "@/components/GameEmbed";
 import styles from "./page.module.scss";
 
 type Props = {
@@ -48,6 +49,12 @@ export default async function PostPage(props: Props) {
     (post.videoType === "hosted" ||
       post.videoType === "youtube" ||
       post.videoType === "vimeo");
+
+  const showGame =
+    post.format === "embedded-game" &&
+    post.gameUrl?.trim() &&
+    post.gameType &&
+    ["iframe", "canvas", "link"].includes(post.gameType);
 
   return (
     <>
@@ -89,6 +96,10 @@ export default async function PostPage(props: Props) {
           className={styles.markdown}
           dangerouslySetInnerHTML={{ __html: html }}
         />
+
+        {showGame ? (
+          <GameEmbed gameUrl={post.gameUrl!} gameType={post.gameType!} title={post.title} />
+        ) : null}
 
         {showVideo ? (
           <VideoPlayer

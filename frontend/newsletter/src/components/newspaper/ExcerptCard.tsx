@@ -34,6 +34,11 @@ export function ExcerptCard({ post }: Props) {
           </p>
           <h3>
             <Link href={`/posts/${post.slug}`} className={styles.headlineLink}>
+              {post.format === "embedded-game" ? (
+                <span className={styles.gameBadge} title="Game">
+                  🎮
+                </span>
+              ) : null}
               {post.title}
             </Link>
           </h3>

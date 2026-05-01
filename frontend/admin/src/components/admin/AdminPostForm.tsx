@@ -8,11 +8,13 @@ import { useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import { z } from 'zod';
 
+import { GameFileUpload } from '@/components/admin/GameFileUpload';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Textarea } from '@/components/ui/Textarea';
 import { newsletterApi } from '@/lib/api';
+import { slugifyForGameFolder } from '@/lib/gameSlug';
 import { cn } from '@/lib/utils';
 
 const FORMATS = [
@@ -191,6 +193,11 @@ export function AdminPostForm({ postId, initialPost }: AdminPostFormProps) {
   const galleryUrls = watch('galleryUrls');
   const categoryId = watch('categoryId');
   const format = watch('format');
+  const titleWatch = watch('title');
+  const gameUploadSlug = useMemo(
+    () => initialPost?.slug ?? slugifyForGameFolder(titleWatch || ''),
+    [initialPost?.slug, titleWatch],
+  );
 
   const subcategories = useMemo(() => {
     const cat = categories?.find((c) => c.id === categoryId);
@@ -349,6 +356,10 @@ export function AdminPostForm({ postId, initialPost }: AdminPostFormProps) {
             ))}
           </Select>
         </div>
+
+        {format === 'embedded-game' ? (
+          <GameFileUpload suggestedSlug={gameUploadSlug} onSuggestGameUrl={(u) => setValue('gameUrl', u)} />
+        ) : null}
 
         <div className="flex justify-end border-t border-zinc-100 pt-4">
           <Button type="submit" disabled={isSubmitting}>

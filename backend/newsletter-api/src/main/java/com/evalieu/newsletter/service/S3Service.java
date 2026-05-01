@@ -44,7 +44,41 @@ public class S3Service {
 	private static final DateTimeFormatter YEAR = DateTimeFormatter.ofPattern("uuuu").withZone(ZoneOffset.UTC);
 	private static final DateTimeFormatter MONTH = DateTimeFormatter.ofPattern("MM").withZone(ZoneOffset.UTC);
 
-	/** Generates a presigned PUT URL (five-minute expiry); expected client limits are about 10MB for images and 500MB for video types. Those limits are not embedded in naked PUT signatures, so reinforce them externally if needed. */
+	/** Presigned PUT for an arbitrary bucket/key (e.g. game assets); five-minute expiry. */
+	public PresignResponse presignPut(String bucket, String objectKey, String contentType) {
+		String trimmedType = normalizedContentType(contentType);
+
+		PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+				.bucket(bucket)
+				.key(objectKey)
+				.contentType(trimmedType)
+				.build();
+
+		PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+				.signatureDuration(Duration.ofMinutes(5))
+				.putObjectRequest(putObjectRequest)
+				.build();
+
+		PresignedPutObjectRequest presigned = s3Presigner.presignPutObject(presignRequest);
+		String regionId = awsRegionProperty == null || awsRegionProperty.isBlank()
+				? "us-east-1"
+				: awsRegionProperty.trim();
+
+		String objectUrl = virtualHostedUrl(bucket, regionId, objectKey);
+		return PresignResponse.builder()
+				.uploadUrl(presigned.url().toString())
+				.objectUrl(objectUrl)
+				.build();
+	}
+
+	public String publicUrlFor(String bucket, String objectKey) {
+		String regionId = awsRegionProperty == null || awsRegionProperty.isBlank()
+				? "us-east-1"
+				: awsRegionProperty.trim();
+		return virtualHostedUrl(bucket, regionId, objectKey);
+	}
+
+	/** Generates a presigned PUT URL (five-minute expiry); media uses fixed allowlists for MIME types and keys under {@code media/}. Client-side size limits apply separately. */
 	public PresignResponse generatePresignedUrl(String filename, String contentType) {
 		String trimmedType = contentType == null ? "" : contentType.trim().toLowerCase(Locale.ROOT);
 		if (!ALLOWED_CONTENT_TYPES.contains(trimmedType)) {
@@ -78,6 +112,13 @@ public class S3Service {
 				.uploadUrl(presigned.url().toString())
 				.objectUrl(objectUrl)
 				.build();
+	}
+
+	private static String normalizedContentType(String contentType) {
+		if (contentType == null || contentType.isBlank()) {
+			return "application/octet-stream";
+		}
+		return contentType.trim().toLowerCase(Locale.ROOT);
 	}
 
 	private static String sanitizeFilename(String filename) {

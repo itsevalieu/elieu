@@ -16,8 +16,18 @@ public class S3Config {
     @Value("${aws.s3.bucket}")
     private String bucket;
 
+    /** When empty, uploads use {@link #getBucket()}. */
+    @Value("${aws.s3.games-bucket:}")
+    private String gamesBucket;
+
     public String getBucket() {
         return bucket;
+    }
+
+    public String getGamesBucket() {
+        return gamesBucket != null && !gamesBucket.isBlank()
+            ? gamesBucket.trim()
+            : bucket.trim();
     }
 
     @Value("${aws.s3.region:}")

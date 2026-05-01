@@ -31,7 +31,7 @@ Personal newspaper/magazine blog and portfolio platform. Full product plan lives
 | 6 | Engagement: Comments, Reactions & Sharing | `[x]` | [phase-6-engagement.md](phases/phase-6-engagement.md) |
 | 7 | Newsletter Email & Subscriber Management | `[x]` | [phase-7-email-subscribers.md](phases/phase-7-email-subscribers.md) |
 | 8 | Analytics, Ads, Ko-fi & Admin Dashboard | `[x]` | [phase-8-analytics-dashboard.md](phases/phase-8-analytics-dashboard.md) |
-| 9 | Games Integration | `[ ]` | [phase-9-games.md](phases/phase-9-games.md) |
+| 9 | Games Integration | `[x]` | [phase-9-games.md](phases/phase-9-games.md) |
 | 10 | React Native Mobile App | `[ ]` | [phase-10-mobile-app.md](phases/phase-10-mobile-app.md) |
 
 ---
