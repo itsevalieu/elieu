@@ -53,7 +53,7 @@ flowchart TD
 
 | Concern | Choice | Rationale |
 |---------|--------|-----------|
-| Framework | Expo SDK 52 (managed workflow) | No native module linking; OTA updates; EAS Build/Submit |
+| Framework | Expo SDK 55 (managed workflow) | No native module linking; OTA updates; EAS Build/Submit; React Native 0.79+ with New Architecture default |
 | Navigation | Expo Router (file-based) | Consistent with Next.js mental model; deep linking support |
 | Auth storage | `expo-secure-store` for tokens | Encrypted keychain (iOS) / keystore (Android) |
 | Draft persistence | `AsyncStorage` | Offline draft saving; syncs on next launch |
@@ -83,11 +83,11 @@ npx create-expo-app mobile/newsletter-app --template expo-template-blank-typescr
   "name": "@evalieu/mobile",
   "dependencies": {
     "@evalieu/common": "*",
-    "expo": "~52.0.0",
-    "expo-router": "~4.0.0",
-    "expo-secure-store": "~14.0.0",
-    "expo-image-picker": "~16.0.0",
-    "expo-notifications": "~0.30.0",
+    "expo": "~55.0.0",
+    "expo-router": "~5.0.0",
+    "expo-secure-store": "~15.0.0",
+    "expo-image-picker": "~17.0.0",
+    "expo-notifications": "~0.32.0",
     "react-native-paper": "^5",
     "@tanstack/react-query": "^5",
     "zustand": "^5"
@@ -385,4 +385,13 @@ export async function uploadToS3(localUri: string): Promise<string> {
 
 ## Decisions & Notes
 
-<!-- Record decisions made during implementation here -->
+| Decision | Choice | Why |
+|----------|--------|-----|
+| Expo SDK 52 → 55 | Expo SDK 55 | SDK 52 EOL by project start; SDK 55 ships React Native 0.79+ with New Architecture enabled by default; better performance, modern JSI bridge |
+| Bearer token over cookies | `Authorization: Bearer` header | React Native doesn't handle cookies well; `expo-secure-store` provides encrypted native storage for tokens |
+| Zustand + React Query over Redux | Zustand (auth/settings) + React Query (server cache) | Zustand is minimal (< 1KB); React Query handles caching, mutations, refetch logic; no boilerplate |
+| React Native Paper over NativeBase | React Native Paper | Material Design 3 native; maintained by Callstack; dark mode built-in; better TypeScript support |
+| Plain TextInput for Markdown over rich editor | Multi-line `TextInput` + WebView preview | Mobile rich text editors are fragile; plain text + preview is reliable and predictable |
+| Swipe gestures for comment moderation | `react-native-gesture-handler` Swipeable | Natural mobile UX for approve/reject; fast moderation without opening each comment |
+
+<!-- Record additional decisions during implementation here -->

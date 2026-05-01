@@ -14,7 +14,7 @@ Build the standalone admin Next.js app that manages all content — newsletter p
 
 ```mermaid
 flowchart TD
-    subgraph admin [frontend/admin — Next.js 15 App Router]
+    subgraph admin [frontend/admin — Next.js 16 App Router]
         LOGIN[/login — Auth page/]
         MW[middleware.ts\nJWT cookie check]
         DASH[/ — Dashboard/]
@@ -55,18 +55,18 @@ flowchart TD
 
 | Concern | Choice | Rationale |
 |---------|--------|-----------|
-| Framework | Next.js 15 App Router | Consistent with other frontend apps; RSC for dashboard |
+| Framework | Next.js 16 App Router | Consistent with other frontend apps; RSC for dashboard; React 19 built-in |
 | Auth | JWT in `httpOnly` cookie; Next.js middleware checks on every route | Cookie set by `newsletter-api /api/auth/login`; middleware reads and validates |
 | UI component library | Shadcn/ui (Radix primitives + Tailwind) | Copy-paste components; fully customizable; excellent data table, form, dialog, toast |
 | Styling | Tailwind CSS | Admin doesn't need newspaper aesthetics; Tailwind is fastest for dashboards |
-| Rich text editor | TipTap (prosemirror-based) with Markdown serialization | Mature, extensible, supports images/embeds, outputs Markdown |
+| Rich text editor | Plate (prosemirror-based, Shadcn-native) with Markdown serialization | Shadcn component model; renders with Tailwind; composable plugins; better alignment than TipTap for a Shadcn/Tailwind admin |
 | Data tables | `@tanstack/react-table` (via Shadcn DataTable) | Sorting, filtering, pagination; used for posts, comments, subscribers |
 | Forms | React Hook Form + Zod validation | Type-safe forms with schema validation |
 | Drag and drop | `@hello-pangea/dnd` (maintained fork of react-beautiful-dnd) | Issue builder — reorder posts within an issue |
 | Image upload | Direct S3 presigned URL upload; dropzone via `react-dropzone` | No server relay; fast multipart upload |
 | Real-time polling | `useSWR` with `refreshInterval: 60000` | Dashboard live data, pending comment count, health checks |
-| PWA | `next-pwa` (or `@serwist/next`) | Service worker, manifest, offline shell |
-| Charting | `recharts` | Sparklines, subscriber growth, error rate charts |
+| PWA | `@serwist/next` | Actively maintained `next-pwa` successor; Serwist is the official continuation; full Next.js 16 support |
+| Charting | `@tremor/react` | Tailwind-native charting; cards + charts + metrics in one library; consistent with admin Tailwind styling |
 | Port | `3002` (fixed in dev script) | Alongside portfolio (:3000) and newsletter (:3001) |
 
 ---
@@ -92,20 +92,17 @@ flowchart TD
   },
   "dependencies": {
     "@evalieu/common": "*",
-    "next": "15.3.2",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "next": "^16",
+    "react": "^19",
+    "react-dom": "^19",
     "swr": "^2",
-    "@tiptap/react": "^2",
-    "@tiptap/starter-kit": "^2",
-    "@tiptap/extension-image": "^2",
-    "@tiptap/extension-link": "^2",
+    "@udecode/plate": "^42",
     "@hello-pangea/dnd": "^17",
     "react-dropzone": "^14",
     "react-hook-form": "^7",
     "@hookform/resolvers": "^3",
     "zod": "^3",
-    "recharts": "^2"
+    "@tremor/react": "^3"
   }
 }
 ```
@@ -249,8 +246,9 @@ export const portfolioApi = {
   });
   ```
 
-  - **TipTap editor** for body:
-    - Extensions: StarterKit, Image (upload via presigned URL on paste/drop), Link, Placeholder
+  - **Plate editor** for body:
+    - Plugins: BasicMarks, Heading, List, Blockquote, CodeBlock, Image (upload via presigned URL on paste/drop), Link, Placeholder
+    - Shadcn-styled toolbar and editor chrome (consistent with admin UI)
     - Live preview panel (rendered Markdown, split-screen)
     - Toolbar: bold, italic, headings, bullet/ordered list, blockquote, code, image, link
 
@@ -334,7 +332,7 @@ export const portfolioApi = {
 }
 ```
 
-- [ ] Configure `next-pwa` or `@serwist/next` in `next.config.ts`:
+- [ ] Configure `@serwist/next` in `next.config.ts`:
   - Precache app shell (layout, login page)
   - Runtime cache API responses (stale-while-revalidate)
   - Offline fallback page
@@ -351,4 +349,13 @@ export const portfolioApi = {
 
 ## Decisions & Notes
 
-<!-- Record decisions made during implementation here -->
+| Decision | Choice | Why |
+|----------|--------|-----|
+| TipTap → Plate | Plate (`@udecode/plate`) | Plate follows the Shadcn component model (copy-paste, Tailwind-styled); TipTap requires separate UI layer and doesn't align with Shadcn admin conventions |
+| next-pwa → @serwist/next | `@serwist/next` | `next-pwa` is unmaintained (last release 2023); Serwist is the official spiritual successor with Next.js 16 support |
+| Recharts → Tremor | `@tremor/react` | Tremor provides cards + charts + metrics in one Tailwind-native library; avoids mixing styled (Recharts) and utility-class (Tailwind) approaches |
+| Standalone admin app | Separate `frontend/admin` | Keeps admin bundle separate from public site; independent deploy; can be locked behind DNS/VPN without affecting public perf |
+| Unified admin for both portfolio + newsletter | Single JWT across both APIs | Single login manages all content; JWT shared secret validated by both backends |
+| Next.js 15 → 16 | Next.js 16 | Stable Turbopack, improved RSC, React 19 built-in, better `next/image` |
+
+<!-- Record additional decisions during implementation here -->

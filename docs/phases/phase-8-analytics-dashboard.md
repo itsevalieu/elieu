@@ -57,7 +57,7 @@ flowchart TD
 | Custom events | `gtag('event', ...)` calls from client components | Standard GA4 custom events; no additional library |
 | AdSense | `<ins class="adsbygoogle">` in dedicated `<AdSlot>` component | Standard AdSense embed; conditional rendering via admin setting |
 | Ko-fi | Ko-fi button widget (JavaScript embed) + floating button | No backend; Ko-fi handles payment |
-| Dashboard charts | Recharts (`AreaChart`, `BarChart`, `PieChart`) | Lightweight, composable, good for sparklines and time-series |
+| Dashboard charts | `@tremor/react` (AreaChart, BarChart, DonutChart, Metric cards) | Tailwind-native; provides both chart and metric card components; consistent with admin Tailwind styling — replaces Recharts |
 | Dashboard data | `/api/admin/stats/overview`, `/api/admin/stats/posts`, `/api/admin/stats/engagement` | Dedicated aggregation endpoints; cached for 5 minutes |
 | Real-time updates | `useSWR` with `refreshInterval` | Engagement feed polls every 60s; health panel every 30s |
 
@@ -128,7 +128,7 @@ public SubscriberStats getSubscriberStats() {
   - Sort by clicking column headers
   - Filter toolbar: category dropdown, date range selector, status dropdown
   - Each row expandable to show emoji breakdown
-  - 30-day view sparkline per post (Recharts `<Sparkline>` with `<AreaChart>`)
+  - 30-day view sparkline per post (Tremor `<SparkAreaChart>`)
 
 - [ ] **Engagement Feed** — real-time activity list:
 
@@ -154,7 +154,7 @@ function EngagementFeed() {
   - Reaction events: "[Emoji] on [Post Title]"
   - Subscriber events: "New subscriber from [source page]"
 
-- [ ] **Subscriber Metrics** — Recharts `<AreaChart>`:
+- [ ] **Subscriber Metrics** — Tremor `<AreaChart>`:
   - X axis: weeks or months
   - Y axis: cumulative subscriber count
   - Tooltip: new subscribers that period, unsubscribe rate
@@ -187,7 +187,7 @@ function HealthPanel() {
 - [ ] DataTable with columns: severity (color-coded badge), service, message (truncated), endpoint, timestamp
 - [ ] Filter bar: severity dropdown, service dropdown, date range picker
 - [ ] Click row to expand: full message + stack trace
-- [ ] **Error rate chart** — Recharts `<BarChart>`: errors per hour, last 7 days, colored by endpoint
+- [ ] **Error rate chart** — Tremor `<BarChart>`: errors per hour, last 7 days, colored by endpoint
 - [ ] **Email alert config**: threshold input (errors/hour) + admin email input; saves to site_settings
 
 ---
@@ -277,4 +277,12 @@ export function AdSlot({ slot, format = 'auto' }: { slot: string; format?: strin
 
 ## Decisions & Notes
 
-<!-- Record decisions made during implementation here -->
+| Decision | Choice | Why |
+|----------|--------|-----|
+| Recharts → Tremor | `@tremor/react` | Tailwind-native; provides metric cards + charts + lists in one library; Recharts required separate styled wrappers that conflicted with Tailwind conventions |
+| GA4 via `@next/third-parties` | Official Next.js integration | Tree-shakeable, no manual `<script>` injection; handles consent-mode natively |
+| AdSense conditional rendering | Admin `show_ads` setting per issue | Allows ad-free issues for special content; respects reader experience |
+| Ko-fi over Patreon/Buy Me a Coffee | Ko-fi widget embed | Zero platform fee on one-time donations; simple JS embed; no backend integration needed |
+| Dedicated aggregation endpoints | `/api/admin/stats/*` | Pre-aggregated data avoids N+1 queries on the dashboard; cached server-side for 5 min |
+
+<!-- Record additional decisions during implementation here -->

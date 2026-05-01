@@ -279,4 +279,13 @@ export function ShareBar({ title, url }: Props) {
 
 ## Decisions & Notes
 
-<!-- Record decisions made during implementation here -->
+| Decision | Choice | Why |
+|----------|--------|-----|
+| FingerprintJS (open-source) for session identity | Browser-only fingerprint → SHA-256 | No cookies or PII stored; resistant to incognito; good enough for reaction deduplication on a personal site |
+| Optimistic UI for reactions | Update local state → reconcile with API | Instant feedback; reactions feel responsive even on slow connections |
+| Jsoup for comment sanitization | `Jsoup.clean(body, Safelist.none())` | Server-side HTML stripping prevents XSS; plain-text-only comments simplify rendering |
+| Honeypot over CAPTCHA | Hidden form field | Better UX (no CAPTCHA friction); effective against simple bots; combined with rate limiting for defense-in-depth |
+| Web Share API over social buttons | `navigator.share()` + clipboard fallback | Native OS share sheet on mobile; no third-party scripts; privacy-friendly |
+| Flat comments (v1) | No reply threading | Simplifies moderation and rendering; threading can be added later if needed |
+
+<!-- Record additional decisions during implementation here -->

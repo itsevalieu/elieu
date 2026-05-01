@@ -259,4 +259,11 @@ useEffect(() => {
 
 ## Decisions & Notes
 
-<!-- Record decisions made during implementation here -->
+| Decision | Choice | Why |
+|----------|--------|-----|
+| React Context over state library | `LayoutContext` + `localStorage` | A single preference value doesn't warrant Zustand/Redux; Context is zero-dependency |
+| URL param override | `?layout=magazine` | Shareable layout links; recipient sees intended layout but can switch freely |
+| Pre-import both layouts | No lazy loading | Both layouts are small enough that code-splitting would add more latency than it saves |
+| Data attribute on `<html>` | `data-layout="magazine"` | CSS custom property swap without React re-renders; pure CSS handles font/color changes |
+
+<!-- Record additional decisions during implementation here -->

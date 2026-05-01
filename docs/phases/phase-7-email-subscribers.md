@@ -401,4 +401,13 @@ export function SubscribeWidget({ source }: { source: string }) {
 
 ## Decisions & Notes
 
-<!-- Record decisions made during implementation here -->
+| Decision | Choice | Why |
+|----------|--------|-----|
+| AWS SES over Mailgun/SendGrid | SES v2 | Already in AWS ecosystem; $0.10/1000 emails; no additional vendor; built-in bounce/complaint handling via SNS |
+| Thymeleaf over MJML | Thymeleaf templates | Spring Boot native; no build step; type-safe variable binding; simpler for a single email template |
+| Double opt-in | Confirmation email required | Industry best practice; reduces spam complaints; ensures valid email addresses |
+| RFC 8058 List-Unsubscribe-Post | One-click unsubscribe header | Gmail and Apple Mail show native unsubscribe button; reduces complaints; regulatory compliance |
+| Tracking pixel for opens | 1x1 transparent GIF | Industry standard; privacy-respectful (self-hosted, no third-party trackers); simple to implement |
+| Silent success on duplicate subscribe | No error for existing email | Prevents email enumeration attacks; existing subscribers see no difference |
+
+<!-- Record additional decisions during implementation here -->

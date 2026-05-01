@@ -224,4 +224,11 @@ export interface Recommendation {
 
 ## Decisions & Notes
 
-<!-- Record decisions made during implementation here -->
+| Decision | Choice | Why |
+|----------|--------|-----|
+| Reuse hobby schema for reading/watching | `category='reading'` + `category='watching'` | No new tables; `hobby_progress_entries` already has the shape needed for book/show tracking |
+| Structured JSON for recipes over Markdown | JSON `ingredients[]` + `steps[]` | Enables interactive ingredients checklist, potential ingredient scaling, better mobile rendering |
+| JSONB metadata column | `metadata JSONB` on `hobby_progress_entries` | Flexible per-entry data (rating, author, status) without schema changes per hobby type |
+| Recommendation moderation | Admin reviews before display | Prevents spam from public recommendation form; no auto-publish risk |
+
+<!-- Record additional decisions during implementation here -->

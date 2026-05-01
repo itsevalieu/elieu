@@ -3,8 +3,10 @@ name: CI — Frontend
 on:
   push:
     branches: [main, dev]
+    paths: ['frontend/**', 'package.json', 'turbo.json']
   pull_request:
     branches: [main, dev]
+    paths: ['frontend/**', 'package.json', 'turbo.json']
   workflow_dispatch:
 
 jobs:
@@ -14,6 +16,7 @@ jobs:
     outputs:
       portfolio: ${{ steps.filter.outputs.portfolio }}
       newsletter: ${{ steps.filter.outputs.newsletter }}
+      admin: ${{ steps.filter.outputs.admin }}
       frontend_common: ${{ steps.filter.outputs.frontend_common }}
 
     steps:
@@ -30,6 +33,8 @@ jobs:
               - 'frontend/portfolio/**'
             newsletter:
               - 'frontend/newsletter/**'
+            admin:
+              - 'frontend/admin/**'
             frontend_common:
               - 'frontend/common/**'
 
@@ -39,6 +44,7 @@ jobs:
     if: >
       needs.detect_changes.outputs.portfolio == 'true' ||
       needs.detect_changes.outputs.newsletter == 'true' ||
+      needs.detect_changes.outputs.admin == 'true' ||
       needs.detect_changes.outputs.frontend_common == 'true'
     runs-on: ubuntu-latest
 
@@ -48,8 +54,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '22'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -78,43 +84,19 @@ jobs:
           needs.detect_changes.outputs.frontend_common == 'true'
         run: npx turbo build --filter=@evalieu/newsletter
 
-#  deploy:
-#    name: Deploy Frontend to AWS Amplify
-#    needs: [detect_changes, lint_and_build]
-#    if: >
-#      github.ref == 'refs/heads/main' && (
-#        needs.detect_changes.outputs.portfolio == 'true' ||
-#        needs.detect_changes.outputs.newsletter == 'true' ||
-#        needs.detect_changes.outputs.frontend_common == 'true'
-#      )
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v4
-#
-#      - name: Configure AWS credentials
-#        uses: aws-actions/configure-aws-credentials@v4
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: us-east-1
-#
-#      - name: Deploy portfolio to Amplify
-#        if: >
-#          needs.detect_changes.outputs.portfolio == 'true' ||
-#          needs.detect_changes.outputs.frontend_common == 'true'
-#        run: >
-#          aws amplify start-job
-#          --app-id ${{ secrets.AMPLIFY_PORTFOLIO_APP_ID }}
-#          --branch-name main
-#          --job-type RELEASE
-#
-#      - name: Deploy newsletter to Amplify
-#        if: >
-#          needs.detect_changes.outputs.newsletter == 'true' ||
-#          needs.detect_changes.outputs.frontend_common == 'true'
-#        run: >
-#          aws amplify start-job
-#          --app-id ${{ secrets.AMPLIFY_NEWSLETTER_APP_ID }}
-#          --branch-name main
-#          --job-type RELEASE
+      - name: Lint admin
+        if: >
+          needs.detect_changes.outputs.admin == 'true' ||
+          needs.detect_changes.outputs.frontend_common == 'true'
+        run: npx turbo lint --filter=@evalieu/admin
+
+      - name: Build admin
+        if: >
+          needs.detect_changes.outputs.admin == 'true' ||
+          needs.detect_changes.outputs.frontend_common == 'true'
+        run: npx turbo build --filter=@evalieu/admin
+
+  # Deployment: Vercel auto-deploys from GitHub integration.
+  # Each Vercel project (portfolio, newsletter, admin) watches its root directory.
+  # No manual deploy step needed — Vercel triggers on push to main.
+  # Preview deploys happen automatically on PRs.

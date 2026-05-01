@@ -13,6 +13,44 @@ Format:
 
 ---
 
+## 2026-04-30 — Infrastructure planning, dependency audit, library swaps
+
+### Done
+- Created Phase 0 — Infrastructure, CI/CD & Deployment (`docs/phases/phase-0-infrastructure.md`)
+  - Defined full AWS architecture: ECS Fargate (backend), Vercel (frontend), RDS PostgreSQL 16, S3 + CloudFront, SES, Secrets Manager
+  - Designed CI/CD pipelines: `ci-frontend.yml`, `ci-backend.yml`, `ci-infra.yml` with path-filtered triggers
+  - Created Docker + Docker Compose setup for local development
+  - Planned Terraform module structure: networking, ECS, RDS, S3, SES, secrets
+  - Documented domain/DNS layout, monitoring/alerting, and cost estimates (~$45/mo)
+- Audited all dependencies and updated phase docs with version upgrades
+- Swapped three libraries based on audit findings
+- Added comprehensive Decisions & Notes tables to every phase (0–10)
+- Updated ROADMAP.md with Phase 0 entry, corrected framework versions, expanded tech decisions log
+
+### Decided
+- **Vercel over AWS Amplify** for frontend hosting: zero-config Next.js deploys, free tier covers 3 projects, preview deploys per PR
+- **ECS Fargate over EC2/Elastic Beanstalk**: serverless containers, no server management, per-second billing
+- **GitHub OIDC over static AWS keys**: no long-lived credentials; IAM role assumption
+- **Terraform over CDK/Pulumi**: declarative HCL, largest community, state management
+- **Single ALB with path-based routing** over separate load balancers: cheaper; both APIs share `api.evalieu.com`
+- **Single-AZ RDS** over Multi-AZ: acceptable risk for personal site; halves database cost
+
+### Changed
+- **Spring Boot 3.x → 4.0.6**: Boot 3 EOL June 2026; Boot 4 includes Spring Framework 7, Jakarta EE 11, Hibernate 7.1, Jackson 3, virtual threads
+- **Next.js 15 → 16**: stable Turbopack, React 19 built-in, improved RSC and `next/image`
+- **Expo SDK 52 → 55**: React Native 0.79+ with New Architecture enabled by default
+- **jjwt 0.12.x → 0.13.0**: CVE fixes, Jackson 3 compatibility for Boot 4
+- **TipTap → Plate** (`@udecode/plate`): follows Shadcn component model, Tailwind-styled, better fit for Shadcn/Tailwind admin
+- **next-pwa → @serwist/next**: next-pwa unmaintained since 2023; Serwist is the official successor with Next.js 16 support
+- **Recharts → @tremor/react**: Tailwind-native charting; provides cards + charts + metrics in one library, consistent with admin styling
+
+### Notes
+- Cost estimate for full AWS stack is ~$45/month at personal site scale
+- Vercel free tier covers all 3 frontend projects (portfolio, newsletter, admin)
+- Docker Compose enables full local dev: `docker-compose up -d` for PostgreSQL + APIs, `npm run dev` for frontends
+
+---
+
 ## 2026-04-30 — Monorepo setup + product planning
 
 ### Done

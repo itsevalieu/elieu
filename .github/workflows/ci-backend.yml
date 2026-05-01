@@ -3,8 +3,10 @@ name: CI — Backend
 on:
   push:
     branches: [main, dev]
+    paths: ['backend/**']
   pull_request:
     branches: [main, dev]
+    paths: ['backend/**']
   workflow_dispatch:
 
 jobs:
@@ -48,82 +50,58 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: "21"
-          distribution: "temurin"
-          cache: "gradle"
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
 
       - name: Test portfolio API
         if: >
           needs.detect_changes.outputs.portfolio_api == 'true' ||
           needs.detect_changes.outputs.backend_common == 'true'
-        run: |
-          cd backend/portfolio-api
-          ./gradlew test
+        run: cd backend/portfolio-api && ./gradlew test
 
       - name: Test newsletter API
         if: >
           needs.detect_changes.outputs.newsletter_api == 'true' ||
           needs.detect_changes.outputs.backend_common == 'true'
-        run: |
-          cd backend/newsletter-api
-          ./gradlew test
+        run: cd backend/newsletter-api && ./gradlew test
 
-#  deploy:
-#    name: Deploy Backend to Elastic Beanstalk
-#    needs: [detect_changes, test]
-#    if: >
-#      github.ref == 'refs/heads/main' && (
-#        needs.detect_changes.outputs.portfolio_api == 'true' ||
-#        needs.detect_changes.outputs.newsletter_api == 'true' ||
-#        needs.detect_changes.outputs.backend_common == 'true'
-#      )
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v4
-#
-#      - name: Set up JDK 21
-#        uses: actions/setup-java@v4
-#        with:
-#          java-version: "21"
-#          distribution: "temurin"
-#          cache: "gradle"
-#
-#      - name: Build portfolio API
-#        if: >
-#          needs.detect_changes.outputs.portfolio_api == 'true' ||
-#          needs.detect_changes.outputs.backend_common == 'true'
-#        run: |
-#          cd backend/portfolio-api
-#          ./gradlew build -x test
-#          mkdir -p deploy
-#          cp build/libs/*.jar deploy/portfolio-api.jar
-#
-#      - name: Build newsletter API
-#        if: >
-#          needs.detect_changes.outputs.newsletter_api == 'true' ||
-#          needs.detect_changes.outputs.backend_common == 'true'
-#        run: |
-#          cd backend/newsletter-api
-#          ./gradlew build -x test
-#          mkdir -p deploy
-#          cp build/libs/*.jar deploy/newsletter-api.jar
-#
-#      - name: Configure AWS credentials
-#        uses: aws-actions/configure-aws-credentials@v4
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: us-east-1
-#
-#      - name: Deploy to Elastic Beanstalk
-#        run: |
-#          zip -r deploy.zip backend/*/deploy/ Procfile
-#          aws elasticbeanstalk create-application-version \
-#            --application-name evalieu-backend \
-#            --version-label "ver-${{ github.sha }}" \
-#            --source-bundle S3Bucket="${{ secrets.EB_BUCKET }}",S3Key="deploy.zip"
-#          aws s3 cp deploy.zip s3://${{ secrets.EB_BUCKET }}/deploy.zip
-#          aws elasticbeanstalk update-environment \
-#            --environment-name evalieu-backend-env \
-#            --version-label "ver-${{ github.sha }}"
+  deploy:
+    name: Deploy to ECS Fargate
+    needs: [detect_changes, test]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+        id: ecr
+
+      - name: Build and push portfolio-api
+        if: >
+          needs.detect_changes.outputs.portfolio_api == 'true' ||
+          needs.detect_changes.outputs.backend_common == 'true'
+        run: |
+          docker build -t ${{ steps.ecr.outputs.registry }}/evalieu-portfolio-api:${{ github.sha }} backend/portfolio-api
+          docker push ${{ steps.ecr.outputs.registry }}/evalieu-portfolio-api:${{ github.sha }}
+          aws ecs update-service --cluster evalieu --service portfolio-api --force-new-deployment
+
+      - name: Build and push newsletter-api
+        if: >
+          needs.detect_changes.outputs.newsletter_api == 'true' ||
+          needs.detect_changes.outputs.backend_common == 'true'
+        run: |
+          docker build -t ${{ steps.ecr.outputs.registry }}/evalieu-newsletter-api:${{ github.sha }} backend/newsletter-api
+          docker push ${{ steps.ecr.outputs.registry }}/evalieu-newsletter-api:${{ github.sha }}
+          aws ecs update-service --cluster evalieu --service newsletter-api --force-new-deployment

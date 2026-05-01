@@ -14,7 +14,7 @@ Build the public-facing newsletter site with the newspaper front page layout. Re
 
 ```mermaid
 flowchart LR
-    subgraph newsletter [frontend/newsletter — Next.js 15 App Router]
+    subgraph newsletter [frontend/newsletter — Next.js 16 App Router]
         RSC[React Server Components\nfetch on server]
         CC[Client Components\ninteractivity only]
         CACHE[Next.js Data Cache\nrevalidate: 60s]
@@ -375,4 +375,12 @@ export const metadata: Metadata = {
 
 ## Decisions & Notes
 
-<!-- Record decisions made during implementation here -->
+| Decision | Choice | Why |
+|----------|--------|-----|
+| Next.js 15 → 16 | Next.js 16 | Stable RSC, improved `next/image`, Turbopack stable, React 19 built-in |
+| CSS Modules + Sass over Tailwind (public site) | CSS Modules + Sass | Newspaper layout uses complex typographic grid that's more readable in Sass; Tailwind reserved for admin |
+| `unified` ecosystem for Markdown | unified/remark/rehype | Best composability; `rehype-sanitize` prevents XSS; GFM tables and task lists via `remark-gfm` |
+| `next/font/google` over CDN fonts | Self-hosted fonts | Zero CLS, GDPR-friendly (no Google CDN calls), faster load |
+| Deployed on Vercel | Vercel | See Phase 0 — zero-config Next.js deploys, preview per PR, edge CDN |
+
+<!-- Record additional decisions during implementation here -->

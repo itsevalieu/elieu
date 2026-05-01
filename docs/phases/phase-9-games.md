@@ -135,7 +135,7 @@ No additional migration needed.
     - Manual URL input (for externally hosted games)
     - File upload dropzone (accepts `.zip`, max 50MB) → calls `/api/admin/media/game-upload` → auto-fills URL
   - **Thumbnail upload** — cover image for the games listing page (uses standard cover image field)
-  - **Description** — TipTap editor for the game's article body (instructions, credits, etc.)
+  - **Description** — Plate editor for the game's article body (instructions, credits, etc.)
 
 ---
 
@@ -255,4 +255,12 @@ export function GameEmbed({ gameUrl, gameType, title }: Props) {
 
 ## Decisions & Notes
 
-<!-- Record decisions made during implementation here -->
+| Decision | Choice | Why |
+|----------|--------|-----|
+| S3 + CloudFront over hosting in the app | Static file hosting | Games are static HTML/JS/CSS; CDN delivery is fast globally; isolated from app deployments |
+| Separate CloudFront distribution | `games.evalieu.com` | Different origin than main site for CSP isolation; prevents game code from accessing newsletter cookies/DOM |
+| Server-side zip extraction | Java `ZipInputStream` | Admin uploads zip; backend validates and extracts; ensures `index.html` exists and no path traversal |
+| File type allowlist | Explicit extension set | Prevents upload of executables, server-side scripts, or other dangerous files |
+| iframe `sandbox` attribute | `allow-scripts allow-same-origin` | Prevents popups, form submissions, top-level navigation; games can still run JS and load assets |
+
+<!-- Record additional decisions during implementation here -->

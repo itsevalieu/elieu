@@ -52,11 +52,12 @@ flowchart LR
 | Concern | Choice | Rationale |
 |---------|--------|-----------|
 | Database | PostgreSQL 16 via Docker (dev), RDS (prod) | JSON column support for `reaction_counts`, `gallery_urls`, `tags`; Flyway handles migrations |
-| ORM | Spring Data JPA + Hibernate | Standard for Spring Boot; `@Entity` mapping with Lombok `@Data`/`@Builder` |
-| Auth | Spring Security 6.x + `jjwt` 0.12.x (io.jsonwebtoken) | HMAC-SHA256 signing; `httpOnly`/`Secure`/`SameSite=Strict` cookies |
+| ORM | Spring Data JPA + Hibernate 7.1 | Standard for Spring Boot 4; `@Entity` mapping with Lombok `@Data`/`@Builder` |
+| Auth | Spring Security 7.x + `jjwt` 0.13.0 (io.jsonwebtoken) | HMAC-SHA256 signing; `httpOnly`/`Secure`/`SameSite=Strict` cookies |
 | Rate limiting | Bucket4j + Caffeine cache (in-memory) | No Redis needed at this scale; per-IP token bucket |
 | S3 | AWS SDK v2 (`software.amazon.awssdk:s3`) | Presigned PUT URLs for direct frontend upload |
 | Logging | Logback + `logstash-logback-encoder` | JSON structured logs; custom appender writes WARN/ERROR to `system_logs` table |
+| Spring Boot | **4.0.6** (Spring Framework 7, Jakarta EE 11, Jackson 3, Servlet 6.1) | Latest LTS; Boot 3.x EOL June 2026; virtual threads, built-in API versioning |
 | Profiles | `application.properties` (base), `application-dev.properties` (H2), `application-prod.properties` (RDS) | H2 in-memory for local dev; PostgreSQL for test/prod |
 | Testing | JUnit 5 + Mockito (unit), Testcontainers + PostgreSQL (integration) | Portfolio-api currently uses TestNG; newsletter-api standardizes on JUnit 5 |
 
@@ -95,9 +96,9 @@ spring.flyway.enabled=true
 
 - [ ] Update `backend/newsletter-api/build.gradle`:
   - Add: `implementation 'org.postgresql:postgresql'`
-  - Add: `implementation 'io.jsonwebtoken:jjwt-api:0.12.6'`
-  - Add: `runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'`
-  - Add: `runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'`
+  - Add: `implementation 'io.jsonwebtoken:jjwt-api:0.13.0'`
+  - Add: `runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'`
+  - Add: `runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'`
   - Add: `implementation 'software.amazon.awssdk:s3:2.29.51'`
   - Add: `implementation 'com.bucket4j:bucket4j-core:8.10.1'`
   - Add: `implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'`
@@ -580,8 +581,8 @@ sequenceDiagram
 ### 7. portfolio-api Changes
 
 **`backend/portfolio-api/build.gradle`** — add:
-- `implementation 'io.jsonwebtoken:jjwt-api:0.12.6'`
-- `runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'`, `jjwt-jackson:0.12.6`
+- `implementation 'io.jsonwebtoken:jjwt-api:0.13.0'`
+- `runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'`, `jjwt-jackson:0.13.0`
 
 **Shared JWT secret**: Both APIs read `JWT_SECRET` from the same environment variable. `newsletter-api` issues tokens; `portfolio-api` only validates them.
 
@@ -653,4 +654,11 @@ backend/portfolio-api/src/main/java/com/evalieu_api/portfolio/
 
 ## Decisions & Notes
 
-<!-- Record decisions made during implementation here -->
+| Decision | Choice | Why |
+|----------|--------|-----|
+| Spring Boot 3.x → 4.0.6 | Spring Boot 4 | Boot 3.x reaches EOL June 2026; Boot 4 ships with Spring Framework 7, Jakarta EE 11, Hibernate 7.1, Jackson 3, and built-in virtual threads support |
+| jjwt 0.12 → 0.13.0 | jjwt 0.13.0 | Fixes known CVEs in 0.12.x; adds `Jwts.builder().header()` fluent API; aligns with Jackson 3 serialization in Boot 4 |
+| H2 for dev, Testcontainers for tests, RDS for prod | Layered DB strategy | H2 is fast for hot-reload dev cycles; Testcontainers gives real PostgreSQL for integration tests; RDS for production durability |
+| Bucket4j in-memory over Redis | Bucket4j + Caffeine | Personal site doesn't need distributed rate limiting; eliminates Redis operational cost and complexity |
+
+<!-- Record additional decisions during implementation here -->
