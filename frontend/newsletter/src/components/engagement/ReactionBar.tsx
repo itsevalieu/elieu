@@ -5,7 +5,7 @@ import type { Post } from "@evalieu/common";
 import { addReaction, removeReaction } from "@/lib/api";
 import styles from "./ReactionBar.module.scss";
 
-const ALLOWED_LIST = ["❤️", "🔥", "😂", "👏", "😮", "😢"] as const;
+const ALLOWED_LIST = ["❤️", "🔥", "😂", "👏", "😮", "😢", "👍", "🎉", "💡", "💯", "🌱"] as const;
 const ALLOWED_KEYS = new Set<string>(ALLOWED_LIST);
 
 function reactionStorageKey(postId: number) {

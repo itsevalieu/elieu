@@ -21,7 +21,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReactionService {
 
-	private static final Set<String> ALLOWED_EMOJI = Set.of("❤️", "🔥", "😂", "👏", "😮", "😢");
+	private static final Set<String> ALLOWED_EMOJI = Set.of(
+			"❤️", "🔥", "😂", "👏", "😮", "😢", "👍", "🎉", "💡", "💯", "🌱");
 
 	private final ReactionRepository reactionRepository;
 	private final PostRepository postRepository;
