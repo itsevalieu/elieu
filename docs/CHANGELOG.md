@@ -2,6 +2,29 @@
 
 Running log of all work sessions, decisions, and changes. Newest entries at the top.
 
+---
+
+## 2026-04-30 — Full implementation of all 11 phases
+
+### Done
+- **Phase 0**: Dockerfiles, docker-compose.yml (PostgreSQL + APIs), Terraform modules (networking, ECS, RDS, S3, SES, secrets), CI/CD workflows
+- **Phase 1**: Full newsletter-api (91 Java files) — 13 Flyway migrations, JPA entities, JWT auth, rate limiting, honeypot, S3 presigned URLs, 18 REST controllers. Portfolio-api updated with JWT validation and admin endpoints
+- **Phase 2**: Newsletter newspaper layout — Playfair Display/Lora fonts, 3-column CSS grid, Masthead, FeaturedArticle, ExcerptCard, API client, Markdown rendering, article pages
+- **Phase 3**: Magazine layout + toggle — LayoutContext with localStorage, MagazineHero, MagazineCard, MagazineCategoryStrip, CSS custom property swap, Inter/DM Sans fonts
+- **Phase 4**: Admin app — Next.js + Tailwind, login/auth, AdminShell with sidebar/bottom nav, CRUD pages for posts, issues, comments, subscribers, portfolio, settings
+- **Phase 5**: Hobby and recipe tracking — admin CRUD with progress entries, public hobby timeline and recipe pages, reading/watching tracking
+- **Phase 6**: Engagement — CommentSection, ReactionBar (optimistic UI), ShareButton (Web Share API), RecommendationForm with honeypot
+- **Phase 7**: Email — Thymeleaf templates, AWS SES v2, confirmation/newsletter emails, RFC 8058 one-click unsubscribe, SubscribeForm, admin send button
+- **Phase 8**: Analytics dashboard — GA4, AdSense, Ko-fi, DashboardService stats endpoints, admin dashboard with stat cards, top posts, subscriber growth, audit timeline
+- **Phase 9**: Games — GameEmbed (sandboxed iframe), GameFileUpload with react-dropzone, presigned game asset uploads
+- **Phase 10**: React Native mobile app — Expo Router, Zustand auth, SecureStore tokens, tab navigation (dashboard, posts, quick post with camera, swipe comment moderation, more menu)
+
+### Key decisions
+- Kept Spring Boot 3.4.5 (4.0.6 upgrade deferred until GA release)
+- Used jjwt 0.12.6 (0.13.0 not yet published)
+- @hello-pangea/dnd bumped to v18 for React 19 compatibility
+- Expo SDK 52 with React 18.3 for mobile (React Native 0.76)
+
 Format:
 ```
 ## YYYY-MM-DD — <summary>

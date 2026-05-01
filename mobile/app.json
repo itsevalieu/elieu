@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "Eva's Admin",
+    "slug": "evalieu-admin",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "evalieu",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.evalieu.admin"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#111111"
+      },
+      "package": "com.evalieu.admin"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-image-picker"
+    ]
+  }
+}

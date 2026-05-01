@@ -1,6 +1,6 @@
 # Phase 10 — React Native Mobile App
 
-**Status:** `[ ]` Not started
+**Status:** `[x]` Complete
 **Repo areas:** `mobile/newsletter-app/` (new)
 **Depends on:** Phase 4
 
