@@ -7,6 +7,7 @@ import { CategoryStrip } from "@/components/newspaper/CategoryStrip";
 import { NewspaperGrid } from "@/components/newspaper/NewspaperGrid";
 import { MagazineHeader } from "@/components/magazine/MagazineHeader";
 import { MagazineFrontPageGrid } from "@/components/magazine/MagazineFrontPageGrid";
+import { RecommendationForm } from "@/components/engagement/RecommendationForm";
 import { SubscribeForm } from "@/components/engagement/SubscribeForm";
 import { AdSlot } from "@/components/AdSlot";
 import { KoFiButton } from "@/components/KoFiButton";
@@ -44,6 +45,9 @@ export function FrontPageContent({
         ) : (
           <p className={styles.empty}>No editions available yet.</p>
         )}
+        <section className={styles.recommendSection}>
+          <RecommendationForm compact />
+        </section>
         <footer className={styles.subscribeFooter}>
           <SubscribeForm compactHeading />
           <KoFiButton kofiUrl={kofiUrl ?? ""} />
@@ -67,6 +71,13 @@ export function FrontPageContent({
       ) : (
         <p className={styles.empty}>No editions available yet.</p>
       )}
+      <section className={styles.recommendSection}>
+        <h2 className={styles.recommendHeading}>Recommend Something</h2>
+        <p className={styles.recommendIntro}>
+          Know a book, show, film, or oddity worth sharing? Drop it here.
+        </p>
+        <RecommendationForm compact />
+      </section>
       <footer className={styles.subscribeFooter}>
         <SubscribeForm compactHeading />
         <KoFiButton kofiUrl={kofiUrl ?? ""} />
