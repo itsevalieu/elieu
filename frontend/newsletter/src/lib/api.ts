@@ -1,4 +1,12 @@
-import type { Category, Hobby, Issue, PagedResponse, Post, Recipe } from "@evalieu/common";
+import type {
+  Category,
+  Comment,
+  Hobby,
+  Issue,
+  PagedResponse,
+  Post,
+  Recipe,
+} from "@evalieu/common";
 
 type IssueApiRecord = Omit<Issue, "posts"> & { posts?: Post[] | null };
 
@@ -131,4 +139,86 @@ export async function getTrackingByCategory(category: string): Promise<Hobby[]> 
   }
   const list = await apiFetch<Hobby[]>(`/api/tracking/${key}`);
   return list.map(normalizeHobby);
+}
+
+async function engagementFetch(path: string, init?: RequestInit): Promise<Response> {
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...init,
+    cache: "no-store",
+  });
+  return res;
+}
+
+/** Public comments for a post (client or server fetch, no ISR cache). */
+export async function getComments(
+  postId: number,
+  page: number,
+  size = 50
+): Promise<PagedResponse<Comment>> {
+  const qs = new URLSearchParams({
+    page: String(page),
+    size: String(size),
+  });
+  const res = await engagementFetch(`/api/posts/${postId}/comments?${qs}`);
+  if (!res.ok) throw new Error(`Comments ${res.status}`);
+  return res.json() as Promise<PagedResponse<Comment>>;
+}
+
+/** Submit reader comment JSON (moderation queue). */
+export async function submitComment(postId: number, data: unknown): Promise<void> {
+  const res = await engagementFetch(`/api/posts/${postId}/comments`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    let msg = `Comment submit failed (${res.status})`;
+    try {
+      const text = await res.text();
+      if (text.trim()) msg = text;
+    } catch {
+      /* keep default */
+    }
+    throw new Error(msg);
+  }
+}
+
+/** Upsert emoji reaction for session; returns post payload with refreshed counts. */
+export async function addReaction(
+  postId: number,
+  emoji: string,
+  sessionId: string
+): Promise<Post> {
+  const res = await engagementFetch(`/api/posts/${postId}/reactions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ emoji, sessionId }),
+  });
+  if (!res.ok) {
+    throw new Error(`Reaction failed (${res.status})`);
+  }
+  return res.json() as Promise<Post>;
+}
+
+export async function removeReaction(postId: number, sessionId: string): Promise<void> {
+  const res = await engagementFetch(`/api/posts/${postId}/reactions`, {
+    method: "DELETE",
+    headers: {
+      "X-Session-Id": sessionId,
+    },
+  });
+  if (!res.ok && res.status !== 204) {
+    throw new Error(`Remove reaction failed (${res.status})`);
+  }
+}
+
+export async function submitRecommendation(data: unknown): Promise<void> {
+  const res = await engagementFetch("/api/recommendations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    throw new Error(`Recommendation failed (${res.status})`);
+  }
 }

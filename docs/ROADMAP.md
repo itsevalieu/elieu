@@ -28,7 +28,7 @@ Personal newspaper/magazine blog and portfolio platform. Full product plan lives
 | 3 | Magazine Layout + Toggle | `[x]` | [phase-3-magazine-layout.md](phases/phase-3-magazine-layout.md) |
 | 4 | Unified Admin App (PWA) | `[x]` | [phase-4-admin-app.md](phases/phase-4-admin-app.md) |
 | 5 | Hobby, Recipe & Life Tracking | `[x]` | [phase-5-tracking.md](phases/phase-5-tracking.md) |
-| 6 | Engagement: Comments, Reactions & Sharing | `[ ]` | [phase-6-engagement.md](phases/phase-6-engagement.md) |
+| 6 | Engagement: Comments, Reactions & Sharing | `[x]` | [phase-6-engagement.md](phases/phase-6-engagement.md) |
 | 7 | Newsletter Email & Subscriber Management | `[ ]` | [phase-7-email-subscribers.md](phases/phase-7-email-subscribers.md) |
 | 8 | Analytics, Ads, Ko-fi & Admin Dashboard | `[ ]` | [phase-8-analytics-dashboard.md](phases/phase-8-analytics-dashboard.md) |
 | 9 | Games Integration | `[ ]` | [phase-9-games.md](phases/phase-9-games.md) |

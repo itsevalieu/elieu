@@ -3,8 +3,11 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getPostBySlug } from "@/lib/api";
+import { CommentSection } from "@/components/engagement/CommentSection";
+import { ReactionBar } from "@/components/engagement/ReactionBar";
+import { ShareButton } from "@/components/engagement/ShareButton";
 import { renderMarkdown } from "@/lib/markdown";
-import { topReactions } from "@/lib/postDisplay";
+import { leadExcerpt } from "@/lib/postDisplay";
 import { Masthead } from "@/components/newspaper/Masthead";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import styles from "./page.module.scss";
@@ -30,7 +33,6 @@ export default async function PostPage(props: Props) {
   if (!post) notFound();
 
   const html = await renderMarkdown(post.body);
-  const reactions = topReactions(post.reactionCounts, 14);
   const published = post.publishedAt
     ? new Intl.DateTimeFormat("en-US", {
         year: "numeric",
@@ -55,9 +57,18 @@ export default async function PostPage(props: Props) {
         </p>
         <h1 className={styles.title}>{post.title}</h1>
         <div className={styles.byline}>
-          {published ? <time dateTime={post.publishedAt ?? undefined}>{published}</time> : null}
-          {published ? <span className={styles.sep}> · </span> : null}
-          <span>{post.commentCount} comments</span>
+          <div className={styles.bylineMain}>
+            {published ? <time dateTime={post.publishedAt ?? undefined}>{published}</time> : null}
+            {published ? <span className={styles.sep}> · </span> : null}
+            <span>
+              {post.commentCount} comment{post.commentCount !== 1 ? "s" : ""}
+            </span>
+          </div>
+          <ShareButton
+            title={post.title}
+            text={leadExcerpt(post)}
+            slug={slug}
+          />
         </div>
 
         {post.coverImageUrl ? (
@@ -85,23 +96,10 @@ export default async function PostPage(props: Props) {
           />
         ) : null}
 
+        <ReactionBar postId={post.id} initialReactionCounts={post.reactionCounts} />
+        <CommentSection postId={post.id} slug={slug} />
+
         <footer className={styles.footer}>
-          {reactions.length > 0 ? (
-            <div className={styles.reactions}>
-              Reactions:{` `}
-              {reactions.map(([emoji, count]) => (
-                <span key={emoji} className={styles.react}>
-                  {emoji} {count}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <p className={styles.footerMeta}>No reactions yet.</p>
-          )}
-          <p className={styles.footerMeta}>
-            {post.commentCount} reader comment
-            {post.commentCount !== 1 ? "s" : ""}
-          </p>
           <Link href="/" className={styles.back}>
             ← Back to front page
           </Link>

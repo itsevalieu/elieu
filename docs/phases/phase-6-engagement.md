@@ -1,6 +1,6 @@
 # Phase 6 — Engagement: Comments, Reactions & Sharing
 
-**Status:** `[ ]` Not started
+**Status:** `[x]` Complete
 **Repo areas:** `frontend/newsletter/`, `frontend/admin/`, `backend/newsletter-api/`
 **Depends on:** Phase 2, Phase 4
 

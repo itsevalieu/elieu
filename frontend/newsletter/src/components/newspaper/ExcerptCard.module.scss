@@ -93,3 +93,31 @@
 .emojiCount {
   font-variant-numeric: tabular-nums;
 }
+
+.countNum {
+  font-variant-numeric: tabular-nums;
+}
+
+.commentLine {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  margin-left: auto;
+}
+
+.msgIcon {
+  flex-shrink: 0;
+  opacity: 0.72;
+  color: inherit;
+}
+
+@media (max-width: 600px) {
+  .meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .commentLine {
+    margin-left: 0;
+  }
+}

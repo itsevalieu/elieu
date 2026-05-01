@@ -104,5 +104,26 @@
 }
 
 .comments {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
   margin-left: auto;
+}
+
+.countNum {
+  font-variant-numeric: tabular-nums;
+}
+
+.msgIcon {
+  flex-shrink: 0;
+  opacity: 0.72;
+  color: inherit;
+}
+
+@media (max-width: 600px) {
+  .comments {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-start;
+  }
 }
