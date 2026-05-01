@@ -1,3 +1,4 @@
+import { Fragment, type ReactNode } from "react";
 import type { Category, Post } from "@evalieu/common";
 import { partitionMagazineFrontPage } from "@/lib/magazineFrontPage";
 import { MagazineHero } from "./MagazineHero";
@@ -8,9 +9,11 @@ import styles from "./MagazineFrontPageGrid.module.scss";
 type Props = {
   posts: Post[];
   categories: Category[];
+  /** Insert between the first two category excerpt groups when there are ≥2 strips. */
+  betweenStripSlot?: ReactNode;
 };
 
-export function MagazineFrontPageGrid({ posts, categories }: Props) {
+export function MagazineFrontPageGrid({ posts, categories, betweenStripSlot }: Props) {
   const { featured, strips, remainder } = partitionMagazineFrontPage(
     posts,
     categories,
@@ -20,13 +23,15 @@ export function MagazineFrontPageGrid({ posts, categories }: Props) {
     <div className={styles.grid}>
       {featured ? <MagazineHero post={featured} /> : null}
 
-      {strips.map((s) => (
-        <MagazineCategoryStrip
-          key={s.slug}
-          categorySlug={s.slug}
-          categoryName={s.name}
-          posts={s.posts}
-        />
+      {strips.map((s, i) => (
+        <Fragment key={s.slug}>
+          <MagazineCategoryStrip
+            categorySlug={s.slug}
+            categoryName={s.name}
+            posts={s.posts}
+          />
+          {i === 0 && strips.length >= 2 && betweenStripSlot ? betweenStripSlot : null}
+        </Fragment>
       ))}
 
       {remainder.length > 0 ? (

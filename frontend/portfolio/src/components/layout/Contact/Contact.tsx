@@ -1,4 +1,5 @@
 "use client";
+import type { ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
 import styles from "./Contact.module.scss";
 
@@ -49,7 +50,7 @@ export default function Contact() {
     return isValid;
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -57,7 +58,7 @@ export default function Contact() {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validateForm()) return;

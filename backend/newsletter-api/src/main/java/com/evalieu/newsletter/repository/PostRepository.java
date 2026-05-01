@@ -18,6 +18,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	Page<Post> findByStatus(String status, Pageable pageable);
 
+	/** Top published posts by view count (fixed cap for dashboard queries). */
+	List<Post> findTop10ByStatusOrderByViewCountDesc(String status);
+
 	Page<Post> findByStatusAndCategoryId(String status, Long categoryId, Pageable pageable);
 
 	List<Post> findByIssueIdAndStatus(Long issueId, String status);
@@ -27,4 +30,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	@Query("SELECT COUNT(p) FROM Post p WHERE p.status = 'published' AND p.publishedAt >= :since")
 	long countPublishedSince(@Param("since") Instant since);
+
+	@Query("SELECT COUNT(p) FROM Post p WHERE p.status = 'published' AND p.publishedAt >= :from AND p.publishedAt < :to")
+	long countPublishedBetween(@Param("from") Instant from, @Param("to") Instant to);
+
+	@Query("SELECT p FROM Post p WHERE p.status = :status AND p.publishedAt IS NOT NULL AND p.publishedAt >= :since ORDER BY p.viewCount DESC")
+	List<Post> findByStatusAndPublishedAtGreaterThanEqual(
+			@Param("status") String status,
+			@Param("since") Instant since,
+			Pageable pageable);
 }

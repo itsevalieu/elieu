@@ -1,0 +1,48 @@
+.kofi {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 999px;
+  font-family: var(--font-inter, sans-serif);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #fff;
+  background: linear-gradient(135deg, #ff5f5f 0%, #d64545 100%);
+  border: none;
+  box-shadow: 0 4px 14px rgb(214 69 69 / 35%);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgb(214 69 69 / 45%);
+  }
+
+  &:focus-visible {
+    outline: 3px solid #ffb3b3;
+    outline-offset: 2px;
+  }
+}
+
+.floating {
+  position: fixed;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  right: max(1rem, env(safe-area-inset-right));
+  margin-top: 0;
+  z-index: 40;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 999px;
+    z-index: -1;
+    background: linear-gradient(135deg, transparent 40%, rgb(255 255 255 / 25%), transparent 65%);
+    pointer-events: none;
+  }
+}

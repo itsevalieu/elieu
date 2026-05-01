@@ -4,6 +4,7 @@ import {
   Activity,
   Briefcase,
   ChefHat,
+  ClipboardList,
   FileText,
   LayoutDashboard,
   LogOut,
@@ -44,6 +45,7 @@ const NAV: ReadonlyArray<{
   { href: '/hobbies', label: 'Hobbies', icon: Target },
   { href: '/recipes', label: 'Recipes', icon: ChefHat },
   { href: '/settings', label: 'Settings', icon: Settings },
+  { href: '/audit-log', label: 'Audit log', icon: ClipboardList },
   { href: '/system-logs', label: 'System Logs', icon: Activity },
 ];
 

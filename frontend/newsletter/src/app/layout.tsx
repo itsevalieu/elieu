@@ -8,6 +8,8 @@ import {
 } from "next/font/google";
 import "./globals.scss";
 import { Suspense } from "react";
+import { Analytics } from "@/components/Analytics";
+import { AdSenseScript } from "@/components/AdSlot";
 import { LayoutProvider } from "@/context/LayoutContext";
 
 /** Avoid prerender-time fetch to the API during `next build` when the backend is offline. */
@@ -54,6 +56,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={fontVarsOnHtml}>
       <body className={fontMono.variable}>
+        <Analytics />
+        <AdSenseScript />
         <Suspense fallback={<>{children}</>}>
           <LayoutProvider>{children}</LayoutProvider>
         </Suspense>

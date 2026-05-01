@@ -1,20 +1,18 @@
-"use client";
-import Head from "next/head";
-import Navbar from "../components/layout/Navbar/Navbar";
-import { Footer } from "@/components/layout/Footer/Footer";
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
 
-export default function Layout({ children, title = "My Portfolio" }) {
+import { Footer } from "@/components/layout/Footer/Footer";
+import Navbar from "@/components/layout/Navbar/Navbar";
+
+export const metadata: Metadata = {
+  title: "My Portfolio",
+  description: "My portfolio website with projects timeline",
+};
+
+export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html>
+    <html lang="en">
       <body>
-        <Head>
-          <title>{title}</title>
-          <meta
-            name="description"
-            content="My portfolio website with projects timeline"
-          />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
         <Navbar />
         <main>{children}</main>
         <Footer />

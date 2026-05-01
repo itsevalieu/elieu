@@ -24,4 +24,10 @@ public interface SubscriberRepository extends JpaRepository<Subscriber, Long> {
 
 	@Query("SELECT COUNT(s) FROM Subscriber s WHERE s.status = 'confirmed' AND s.confirmedAt >= :since")
 	long countConfirmedSince(@Param("since") Instant since);
+
+	@Query("SELECT COUNT(s) FROM Subscriber s WHERE s.status = 'confirmed' AND s.confirmedAt IS NOT NULL AND s.confirmedAt >= :from AND s.confirmedAt < :to")
+	long countConfirmedBetween(@Param("from") Instant from, @Param("to") Instant to);
+
+	@Query("SELECT COUNT(s) FROM Subscriber s WHERE s.status = 'confirmed' AND s.confirmedAt IS NOT NULL AND s.confirmedAt < :beforeExclusive")
+	long countConfirmedWithConfirmedAtBeforeExclusive(@Param("beforeExclusive") Instant beforeExclusive);
 }

@@ -6,6 +6,7 @@ import { getPostBySlug } from "@/lib/api";
 import { CommentSection } from "@/components/engagement/CommentSection";
 import { ReactionBar } from "@/components/engagement/ReactionBar";
 import { ShareButton } from "@/components/engagement/ShareButton";
+import { AdSlot } from "@/components/AdSlot";
 import { renderMarkdown } from "@/lib/markdown";
 import { leadExcerpt } from "@/lib/postDisplay";
 import { Masthead } from "@/components/newspaper/Masthead";
@@ -95,6 +96,8 @@ export default async function PostPage(props: Props) {
             type={post.videoType as "hosted" | "youtube" | "vimeo"}
           />
         ) : null}
+
+        <AdSlot slot={`post-${post.id}`} />
 
         <ReactionBar postId={post.id} initialReactionCounts={post.reactionCounts} />
         <CommentSection postId={post.id} slug={slug} />

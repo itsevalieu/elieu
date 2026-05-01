@@ -1,11 +1,14 @@
 package com.evalieu.newsletter.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.evalieu.newsletter.service.CommentService;
-import com.evalieu.newsletter.service.PostService;
-import com.evalieu.newsletter.service.SubscriberService;
+import com.evalieu.newsletter.dto.DashboardOverviewResponse;
+import com.evalieu.newsletter.service.DashboardService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,25 +16,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StatsController {
 
-	private final PostService postService;
-	private final SubscriberService subscriberService;
-	private final CommentService commentService;
+	private final DashboardService dashboardService;
 
 	@GetMapping("/api/admin/stats/overview")
-	public StatsOverviewResponse overview() {
-		return new StatsOverviewResponse(
-				postService.countByStatus("published"),
-				postService.countByStatus("draft"),
-				postService.countByStatus("archived"),
-				subscriberService.countConfirmed(),
-				commentService.countPending());
+	public DashboardOverviewResponse overview() {
+		return dashboardService.getDashboardOverview();
 	}
 
-	public record StatsOverviewResponse(
-			long totalPublished,
-			long totalDrafts,
-			long totalArchived,
-			long totalSubscribers,
-			long pendingComments) {
+	@GetMapping("/api/admin/stats/top-posts")
+	public List<Map<String, Object>> topPosts(@RequestParam(defaultValue = "10") int limit) {
+		return dashboardService.getTopPosts(limit);
+	}
+
+	@GetMapping("/api/admin/stats/subscriber-growth")
+	public List<Map<String, Object>> subscriberGrowth(@RequestParam(defaultValue = "6") int months) {
+		return dashboardService.getSubscriberGrowth(months);
 	}
 }

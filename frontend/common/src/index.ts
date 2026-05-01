@@ -9,3 +9,4 @@ export type { PagedResponse } from "./types/paged";
 export type { Hobby, HobbyProgressEntry } from "./types/hobby";
 export type { Recipe } from "./types/recipe";
 export type { Recommendation } from "./types/recommendation";
+export type { SystemLog, AdminAuditLog } from "./types/systemAudit";

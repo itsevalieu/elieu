@@ -23,6 +23,7 @@ export default async function HomePage() {
         posts={posts}
         categories={categories}
         issueLine={issueLine}
+        kofiUrl={process.env.NEXT_PUBLIC_KOFI_URL}
       />
     </main>
   );
