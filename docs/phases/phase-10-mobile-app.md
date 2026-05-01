@@ -245,6 +245,7 @@ mobile/newsletter-app/app/
   - Markdown text input (multi-line `TextInput` with monospace font)
   - Preview toggle — renders Markdown in a WebView
   - Cover image: "Take Photo" / "Choose from Library" via `expo-image-picker` → upload to S3 → store URL
+  - Video: "Record Video" / "Choose Video" via `expo-image-picker` (mediaTypes: 'Videos') → upload to S3 (max 500MB) → sets `videoType: 'hosted'`; or paste YouTube/Vimeo URL input → auto-detect type
   - Issue assignment dropdown
   - Tags input
   - Save Draft / Publish buttons in header

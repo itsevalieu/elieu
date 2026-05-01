@@ -164,7 +164,9 @@ CREATE TABLE posts (
     category_id     BIGINT REFERENCES categories(id),
     subcategory_id  BIGINT REFERENCES subcategories(id),
     cover_image_url TEXT,
-    gallery_urls    JSONB DEFAULT '[]'::jsonb,
+    gallery_urls    JSONB DEFAULT '[]'::jsonb,   -- ["https://cdn.../img1.jpg", ...]
+    video_url       TEXT,                        -- S3/CloudFront hosted video OR external embed URL
+    video_type      VARCHAR(20),                 -- hosted | youtube | vimeo
     status          VARCHAR(20) NOT NULL DEFAULT 'draft',    -- draft | published | archived
     format          VARCHAR(30) NOT NULL DEFAULT 'article',  -- article | photo-caption | embedded-game | project-link | list | recipe | tracking-entry | quote
     layout_hint     VARCHAR(20) NOT NULL DEFAULT 'column',   -- featured | column | brief | sidebar | pull-quote
@@ -565,9 +567,9 @@ sequenceDiagram
     participant S3 as AWS S3
 
     Admin->>API: POST /api/admin/media/presign {filename, contentType}
-    API->>API: Validate contentType (image/jpeg, image/png, image/webp, image/gif)
+    API->>API: Validate contentType (images: jpeg/png/webp/gif; video: mp4/webm/quicktime)
     API->>API: Generate unique key: media/{yyyy}/{mm}/{uuid}-{filename}
-    API->>S3: Generate presigned PUT URL (5 min expiry, 10MB max)
+    API->>S3: Generate presigned PUT URL (5 min expiry; 10MB max images, 500MB max video)
     API-->>Admin: {uploadUrl, objectUrl}
     Admin->>S3: PUT file directly to uploadUrl
     Admin->>API: Include objectUrl in post/achievement create/update

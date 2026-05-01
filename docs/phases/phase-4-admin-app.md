@@ -256,6 +256,12 @@ export const portfolioApi = {
 
   - **Cover image upload**: `react-dropzone` → request presigned URL → upload to S3 → store objectUrl
   - **Gallery upload**: multi-image dropzone, same flow
+  - **Video upload/embed**: three options presented in a tabbed input:
+    - **Upload** tab: dropzone for mp4/webm/mov (max 500MB) → presigned URL → S3 → sets `videoType: 'hosted'`
+    - **YouTube** tab: paste URL → regex extracts video ID → preview embed shown → sets `videoType: 'youtube'`
+    - **Vimeo** tab: paste URL → regex extracts video ID → preview embed shown → sets `videoType: 'vimeo'`
+    - Once set, a preview player renders inline below the input
+    - "Remove video" button clears the field
   - **Conditional fields**: quote fields shown when format = `quote`; game fields when format = `embedded-game`
   - **Tag input**: comma-separated with chips; autocomplete from existing tags
   - **Save draft** (POST with status=draft) / **Publish** (POST with status=published) buttons

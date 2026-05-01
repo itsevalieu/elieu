@@ -71,6 +71,8 @@ export interface Post {
   subcategoryName: string | null;
   coverImageUrl: string | null;
   galleryUrls: string[];
+  videoUrl: string | null;
+  videoType: 'hosted' | 'youtube' | 'vimeo' | null;
   status: 'draft' | 'published' | 'archived';
   format: 'article' | 'photo-caption' | 'embedded-game' | 'project-link'
     | 'list' | 'recipe' | 'tracking-entry' | 'quote';
@@ -260,6 +262,14 @@ All components in `components/newspaper/`.
 
 - [ ] **`ArticleHeader.tsx`**:
   - Title (Playfair Display, large), published date, category badge (link), cover image (`next/image`, hero)
+
+- [ ] **`VideoPlayer.tsx`** (`'use client'`) — handles all video types:
+  - `hosted` → HTML5 `<video>` with `controls`, `preload="metadata"`, poster from cover image, S3/CloudFront `src`; wrapped in responsive 16:9 container
+  - `youtube` → `<iframe src="https://www.youtube-nocookie.com/embed/{videoId}" />` (privacy-enhanced mode), `loading="lazy"`, `allow="fullscreen"`
+  - `vimeo` → `<iframe src="https://player.vimeo.com/video/{videoId}" />`, `loading="lazy"`
+  - Extracts video ID from full YouTube/Vimeo URLs automatically
+  - Placed above the article body when `post.videoUrl` is set
+  - Shown on article page; excerpt cards show a play icon overlay on the cover image if video exists
 
 - [ ] **`ArticleBody.tsx`** — server component:
   - Markdown → HTML pipeline:
