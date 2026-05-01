@@ -1,0 +1,28 @@
+.main {
+  padding-bottom: var(--spacing-xl);
+}
+
+.navRow {
+  max-width: 1200px;
+  margin: 0 auto var(--spacing-md);
+  padding: 0 var(--spacing-lg);
+}
+
+.back {
+  font-family: var(--font-headline);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-accent);
+  border-bottom: 1px solid transparent;
+}
+
+.back:hover {
+  border-bottom-color: var(--color-accent);
+}
+
+.empty {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-muted);
+}

@@ -1,2 +1,11 @@
 export type { Project } from "./types/project";
 export type { Achievement } from "./types/achievement";
+export type { Post } from "./types/post";
+export type { Issue } from "./types/issue";
+export type { Category, Subcategory } from "./types/category";
+export type { Comment } from "./types/comment";
+export type { ReactionSummary } from "./types/reaction";
+export type { PagedResponse } from "./types/paged";
+export type { Hobby, HobbyProgressEntry } from "./types/hobby";
+export type { Recipe } from "./types/recipe";
+export type { Recommendation } from "./types/recommendation";

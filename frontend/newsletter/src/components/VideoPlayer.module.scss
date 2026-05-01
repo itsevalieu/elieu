@@ -1,0 +1,21 @@
+.frame {
+  position: relative;
+  width: 100%;
+  margin: var(--spacing-lg) 0;
+  border-top: 1px solid var(--color-rule);
+  border-bottom: 1px solid var(--color-rule);
+  padding: var(--spacing-md) 0;
+}
+
+.video {
+  display: block;
+  width: 100%;
+  max-height: 70vh;
+  background: #000;
+}
+
+.iframe {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border: none;
+}

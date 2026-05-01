@@ -1,0 +1,39 @@
+.masthead {
+  text-align: center;
+  padding: var(--spacing-lg) 0;
+  border-bottom: 3px double var(--color-rule);
+  margin-bottom: var(--spacing-lg);
+}
+
+.homeLink:hover .title {
+  color: var(--color-accent);
+}
+
+.title {
+  font-family: var(--font-headline);
+  font-size: clamp(2.25rem, 6vw, 3.5rem);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-top: 3px solid var(--color-rule);
+  border-bottom: 1px solid var(--color-rule);
+  padding: var(--spacing-sm) 0;
+  display: inline-block;
+  width: 100%;
+  max-width: 100%;
+}
+
+.dateLine {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-top: var(--spacing-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.issueLine {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  margin-top: var(--spacing-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}

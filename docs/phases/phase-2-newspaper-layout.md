@@ -1,6 +1,6 @@
 # Phase 2 — Public Site: Newspaper Layout
 
-**Status:** `[ ]` Not started
+**Status:** `[x]` Complete
 **Repo areas:** `frontend/newsletter/`, `frontend/common/`
 **Depends on:** Phase 1
 

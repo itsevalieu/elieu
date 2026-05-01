@@ -1,0 +1,55 @@
+.newspaper {
+  max-width: 1200px;
+  margin: 0 auto var(--spacing-xl);
+  padding: 0 var(--spacing-lg);
+}
+
+.headlineLink {
+  display: inline-block;
+  margin-bottom: var(--spacing-md);
+}
+
+.headline {
+  font-family: var(--font-headline);
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  line-height: 1.12;
+  color: var(--color-ink);
+  border-bottom: 1px solid transparent;
+}
+
+.headlineLink:hover .headline {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+.cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 21 / 9;
+  overflow: hidden;
+  border-top: 1px solid var(--color-rule);
+  border-bottom: 1px solid var(--color-rule);
+  margin-bottom: var(--spacing-md);
+  background: #eee9e0;
+}
+
+.coverImage {
+  object-fit: cover;
+}
+
+.excerpt {
+  font-size: 1rem;
+  color: var(--color-muted);
+  max-width: 65ch;
+  text-align: justify;
+  hyphens: auto;
+  margin-bottom: var(--spacing-sm);
+}
+
+.readMore {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-accent);
+  font-family: var(--font-headline);
+}
