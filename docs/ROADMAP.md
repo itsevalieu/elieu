@@ -14,7 +14,7 @@ Personal newspaper/magazine blog and portfolio platform. Full product plan lives
 
 ## Current Focus
 
-> Phase 0 — Infrastructure, CI/CD & Deployment
+> Phase 1 — Content API Foundation
 
 ---
 
@@ -22,7 +22,7 @@ Personal newspaper/magazine blog and portfolio platform. Full product plan lives
 
 | # | Phase | Status | Detail |
 |---|-------|--------|--------|
-| 0 | Infrastructure, CI/CD & Deployment | `[ ]` | [phase-0-infrastructure.md](phases/phase-0-infrastructure.md) |
+| 0 | Infrastructure, CI/CD & Deployment | `[x]` | [phase-0-infrastructure.md](phases/phase-0-infrastructure.md) |
 | 1 | Content API Foundation | `[ ]` | [phase-1-content-api.md](phases/phase-1-content-api.md) |
 | 2 | Newspaper Front Page | `[ ]` | [phase-2-newspaper-layout.md](phases/phase-2-newspaper-layout.md) |
 | 3 | Magazine Layout + Toggle | `[ ]` | [phase-3-magazine-layout.md](phases/phase-3-magazine-layout.md) |

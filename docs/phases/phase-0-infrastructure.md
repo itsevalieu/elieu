@@ -1,6 +1,6 @@
 # Phase 0 — Infrastructure, CI/CD & Deployment
 
-**Status:** `[ ]` Not started
+**Status:** `[x]` Complete
 **Repo areas:** `iac/`, `.github/workflows/`, `backend/*/Dockerfile`, `docker-compose.yml`
 
 ## Goal
