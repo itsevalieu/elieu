@@ -1,8 +1,11 @@
 package com.evalieu.portfolio.controllers;
 
+import com.evalieu.portfolio.dto.AchievementRequest;
 import com.evalieu.portfolio.models.Achievement;
 import com.evalieu.portfolio.models.Project;
+import com.evalieu.portfolio.services.AchievementService;
 import com.evalieu.portfolio.services.ProjectService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +16,11 @@ import java.util.List;
 public class ProjectController {
 
 	private final ProjectService projectService;
+	private final AchievementService achievementService;
 
-	public ProjectController(ProjectService projectService) {
+	public ProjectController(ProjectService projectService, AchievementService achievementService) {
 		this.projectService = projectService;
+		this.achievementService = achievementService;
 	}
 
 	@GetMapping
@@ -62,6 +67,17 @@ public class ProjectController {
 				.map(Project::getAchievements)
 				.orElseThrow(() -> new RuntimeException("Project not found"));
 			return ResponseEntity.ok(achievements);
+		} catch (RuntimeException e) {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@PostMapping("/{projectId}/achievements")
+	public ResponseEntity<Achievement> addAchievement(
+			@PathVariable Long projectId,
+			@Valid @RequestBody AchievementRequest body) {
+		try {
+			return ResponseEntity.ok(achievementService.createForProject(projectId, body));
 		} catch (RuntimeException e) {
 			return ResponseEntity.notFound().build();
 		}

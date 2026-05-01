@@ -49,6 +49,12 @@ public class PostService {
 		return postRepository.findAll(pageable);
 	}
 
+	@Transactional(readOnly = true)
+	public Post findById(Long id) {
+		return postRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Post not found: " + id));
+	}
+
 	@Transactional
 	public Post create(PostRequest req) {
 		String slugBase = slugFromTitle(req.getTitle());

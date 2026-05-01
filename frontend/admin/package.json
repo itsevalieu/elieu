@@ -1,0 +1,37 @@
+{
+  "name": "@evalieu/admin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3002",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@evalieu/common": "*",
+    "next": "15.3.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "swr": "^2",
+    "@hello-pangea/dnd": "^18",
+    "react-dropzone": "^14",
+    "react-hook-form": "^7",
+    "@hookform/resolvers": "^3",
+    "zod": "^3",
+    "lucide-react": "^0.500",
+    "clsx": "^2",
+    "tailwind-merge": "^3"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.2",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "tailwindcss": "^4"
+  }
+}

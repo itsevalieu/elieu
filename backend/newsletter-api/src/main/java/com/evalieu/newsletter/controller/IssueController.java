@@ -30,6 +30,14 @@ public class IssueController extends PagingControllerSupport {
 	private final PostService postService;
 	private final PostResponseMapper postResponseMapper;
 
+	@GetMapping("/api/admin/issues")
+	public PagedResponse<IssueResponse> listAllAdmin(
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size) {
+		return toPagedResponse(
+				issueService.findAll(PageRequest.of(page, size)).map(i -> toIssueResponse(i, false)));
+	}
+
 	@GetMapping("/api/issues")
 	public PagedResponse<IssueResponse> listPublished(
 			@RequestParam(defaultValue = "0") int page,

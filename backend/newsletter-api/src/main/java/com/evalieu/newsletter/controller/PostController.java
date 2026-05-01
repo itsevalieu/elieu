@@ -59,6 +59,11 @@ public class PostController extends PagingControllerSupport {
 		return toPagedResponse(postService.findAll(PageRequest.of(page, size)).map(postResponseMapper::toResponse));
 	}
 
+	@GetMapping("/api/admin/posts/{id}")
+	public PostResponse getAdmin(@PathVariable Long id) {
+		return postResponseMapper.toResponse(postService.findById(id));
+	}
+
 	@PostMapping("/api/admin/posts")
 	public PostResponse createAdmin(@Valid @RequestBody PostRequest req) {
 		return postResponseMapper.toResponse(postService.create(req));

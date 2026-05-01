@@ -4,4 +4,5 @@ export interface Achievement {
   title: string;
   date: string;
   context: string;
+  photoUrl?: string | null;
 }

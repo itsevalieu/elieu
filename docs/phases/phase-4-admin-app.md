@@ -1,6 +1,6 @@
 # Phase 4 — Unified Admin App (PWA)
 
-**Status:** `[ ]` Not started
+**Status:** `[x]` Complete
 **Repo areas:** `frontend/admin/` (new), `backend/newsletter-api/`, `backend/portfolio-api/`
 **Depends on:** Phase 1
 

@@ -26,7 +26,7 @@ Personal newspaper/magazine blog and portfolio platform. Full product plan lives
 | 1 | Content API Foundation | `[x]` | [phase-1-content-api.md](phases/phase-1-content-api.md) |
 | 2 | Newspaper Front Page | `[x]` | [phase-2-newspaper-layout.md](phases/phase-2-newspaper-layout.md) |
 | 3 | Magazine Layout + Toggle | `[x]` | [phase-3-magazine-layout.md](phases/phase-3-magazine-layout.md) |
-| 4 | Unified Admin App (PWA) | `[ ]` | [phase-4-admin-app.md](phases/phase-4-admin-app.md) |
+| 4 | Unified Admin App (PWA) | `[x]` | [phase-4-admin-app.md](phases/phase-4-admin-app.md) |
 | 5 | Hobby, Recipe & Life Tracking | `[ ]` | [phase-5-tracking.md](phases/phase-5-tracking.md) |
 | 6 | Engagement: Comments, Reactions & Sharing | `[ ]` | [phase-6-engagement.md](phases/phase-6-engagement.md) |
 | 7 | Newsletter Email & Subscriber Management | `[ ]` | [phase-7-email-subscribers.md](phases/phase-7-email-subscribers.md) |

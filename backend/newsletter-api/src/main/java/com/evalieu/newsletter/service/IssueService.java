@@ -30,6 +30,11 @@ public class IssueService {
 	}
 
 	@Transactional(readOnly = true)
+	public Page<Issue> findAll(Pageable pageable) {
+		return issueRepository.findAll(pageable);
+	}
+
+	@Transactional(readOnly = true)
 	public Issue findBySlug(String slug) {
 		return issueRepository.findBySlug(slug)
 				.orElseThrow(() -> new ResourceNotFoundException("Issue not found: " + slug));
