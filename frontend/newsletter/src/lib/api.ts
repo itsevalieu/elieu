@@ -74,6 +74,23 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
   return res.json() as Promise<Post>;
 }
 
+export async function searchPosts(
+  query: string,
+  page = 0,
+  size = 20,
+): Promise<PagedResponse<Post>> {
+  const qs = new URLSearchParams({ q: query, page: String(page), size: String(size) });
+  return apiFetch<PagedResponse<Post>>(`/api/posts/search?${qs}`);
+}
+
+export async function getPostByPreviewToken(token: string): Promise<Post | null> {
+  const path = `/api/posts/preview/${encodeURIComponent(token)}`;
+  const res = await fetch(`${API_BASE}${path}`, { cache: "no-store" });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`API ${res.status}: ${path}`);
+  return res.json() as Promise<Post>;
+}
+
 export async function getCategories(): Promise<Category[]> {
   return apiFetch<Category[]>("/api/categories");
 }

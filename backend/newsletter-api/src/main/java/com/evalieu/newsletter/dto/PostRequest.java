@@ -1,5 +1,6 @@
 package com.evalieu.newsletter.dto;
 
+import java.time.Instant;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
@@ -33,4 +34,5 @@ public class PostRequest {
 	private String quoteSource;
 	private String gameUrl;
 	private String gameType;
+	private Instant scheduledAt;
 }

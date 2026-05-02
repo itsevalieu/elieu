@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.evalieu.newsletter.dto.PostRequest;
 import com.evalieu.newsletter.exception.ResourceNotFoundException;
@@ -17,9 +19,11 @@ import com.evalieu.newsletter.model.Post;
 import com.evalieu.newsletter.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostService {
 
 	private final PostRepository postRepository;
@@ -62,8 +66,9 @@ public class PostService {
 		Post.PostBuilder builder = Post.builder().slug(slug).commentCount(0).viewCount(0).reactionCounts(Map.of());
 		populate(builder, req);
 		Post post = builder.build();
-		if ("published".equalsIgnoreCase(post.getStatus())) {
-			post.setPublishedAt(Instant.now());
+		applyStatusLogic(post, null);
+		if (!StringUtils.hasText(post.getPreviewToken())) {
+			post.setPreviewToken(UUID.randomUUID().toString().replace("-", ""));
 		}
 		Post saved = postRepository.save(post);
 		auditLogService.record("POST_CREATE", "Post", saved.getId(), Map.of("slug", saved.getSlug()));
@@ -79,12 +84,30 @@ public class PostService {
 		String slug = ensureUniquePostSlug(slugBase, id);
 		populateExisting(post, req);
 		post.setSlug(slug);
-		if (!"published".equalsIgnoreCase(previousStatus) && "published".equalsIgnoreCase(post.getStatus())) {
-			post.setPublishedAt(Instant.now());
+		applyStatusLogic(post, previousStatus);
+		if (!StringUtils.hasText(post.getPreviewToken())) {
+			post.setPreviewToken(UUID.randomUUID().toString().replace("-", ""));
 		}
 		Post saved = postRepository.save(post);
 		auditLogService.record("POST_UPDATE", "Post", saved.getId(), Map.of("slug", saved.getSlug()));
 		return saved;
+	}
+
+	private void applyStatusLogic(Post post, String previousStatus) {
+		String status = post.getStatus();
+		if ("published".equalsIgnoreCase(status)) {
+			if (!"published".equalsIgnoreCase(previousStatus)) {
+				post.setPublishedAt(Instant.now());
+			}
+			post.setScheduledAt(null);
+		} else if ("scheduled".equalsIgnoreCase(status)) {
+			post.setPublishedAt(null);
+		} else {
+			// draft or archived
+			if (!"published".equalsIgnoreCase(previousStatus)) {
+				post.setPublishedAt(null);
+			}
+		}
 	}
 
 	@Transactional
@@ -103,6 +126,37 @@ public class PostService {
 	@Transactional(readOnly = true)
 	public long countByStatus(String status) {
 		return postRepository.countByStatus(status);
+	}
+
+	@Transactional(readOnly = true)
+	public Page<Post> searchPublished(String query, Pageable pageable) {
+		return postRepository.searchPublished(query.trim(), pageable);
+	}
+
+	@Transactional(readOnly = true)
+	public Page<Post> searchAll(String query, Pageable pageable) {
+		return postRepository.searchAll(query.trim(), pageable);
+	}
+
+	@Transactional(readOnly = true)
+	public Post findByPreviewToken(String token) {
+		return postRepository.findByPreviewToken(token)
+				.orElseThrow(() -> new ResourceNotFoundException("Preview not found"));
+	}
+
+	@Transactional
+	public int publishScheduledPosts() {
+		List<Post> due = postRepository.findByStatusAndScheduledAtBefore("scheduled", Instant.now());
+		for (Post post : due) {
+			post.setStatus("published");
+			post.setPublishedAt(Instant.now());
+			post.setScheduledAt(null);
+			postRepository.save(post);
+			auditLogService.record("POST_PUBLISH_SCHEDULED", "Post", post.getId(),
+					Map.of("slug", post.getSlug()));
+			log.info("Auto-published scheduled post: {}", post.getSlug());
+		}
+		return due.size();
 	}
 
 	private void populateExisting(Post post, PostRequest req) {
@@ -124,6 +178,7 @@ public class PostService {
 		post.setQuoteSource(req.getQuoteSource());
 		post.setGameUrl(req.getGameUrl());
 		post.setGameType(req.getGameType());
+		post.setScheduledAt(req.getScheduledAt());
 	}
 
 	private void populate(Post.PostBuilder builder, PostRequest req) {
@@ -144,7 +199,8 @@ public class PostService {
 				.quoteAuthor(req.getQuoteAuthor())
 				.quoteSource(req.getQuoteSource())
 				.gameUrl(req.getGameUrl())
-				.gameType(req.getGameType());
+				.gameType(req.getGameType())
+				.scheduledAt(req.getScheduledAt());
 	}
 
 	private static String slugFromTitle(String title) {

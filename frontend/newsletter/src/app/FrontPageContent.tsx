@@ -10,6 +10,7 @@ import { MagazineFrontPageGrid } from "@/components/magazine/MagazineFrontPageGr
 import { RecommendationForm } from "@/components/engagement/RecommendationForm";
 import { SubscribeForm } from "@/components/engagement/SubscribeForm";
 import { LayoutToggle } from "@/components/shared/LayoutToggle";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { AdSlot } from "@/components/AdSlot";
 import { KoFiButton } from "@/components/KoFiButton";
 import styles from "./FrontPageContent.module.scss";
@@ -54,6 +55,7 @@ export function FrontPageContent({
           <KoFiButton kofiUrl={kofiUrl ?? ""} />
           <div className={styles.layoutToggleRow}>
             <LayoutToggle />
+            <ThemeToggle />
           </div>
         </footer>
       </div>
@@ -87,6 +89,7 @@ export function FrontPageContent({
         <KoFiButton kofiUrl={kofiUrl ?? ""} />
         <div className={styles.layoutToggleRow}>
           <LayoutToggle />
+          <ThemeToggle />
         </div>
       </footer>
     </>

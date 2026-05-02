@@ -50,6 +50,8 @@ public class PostResponseMapper {
 				.quoteSource(post.getQuoteSource())
 				.gameUrl(post.getGameUrl())
 				.gameType(post.getGameType())
+				.scheduledAt(post.getScheduledAt())
+				.previewToken(post.getPreviewToken())
 				.viewCount(post.getViewCount())
 				.createdAt(post.getCreatedAt())
 				.updatedAt(post.getUpdatedAt())

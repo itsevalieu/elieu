@@ -47,9 +47,36 @@ public class PostController extends PagingControllerSupport {
 		return toPagedResponse(result.map(postResponseMapper::toResponse));
 	}
 
+	@GetMapping("/api/posts/search")
+	public PagedResponse<PostResponse> searchPublished(
+			@RequestParam String q,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size) {
+		if (q == null || q.trim().isEmpty()) {
+			return toPagedResponse(Page.empty(PageRequest.of(page, size)));
+		}
+		return toPagedResponse(postService.searchPublished(q, PageRequest.of(page, size)).map(postResponseMapper::toResponse));
+	}
+
+	@GetMapping("/api/posts/preview/{token}")
+	public PostResponse getPreview(@PathVariable String token) {
+		return postResponseMapper.toResponse(postService.findByPreviewToken(token));
+	}
+
 	@GetMapping("/api/posts/{slug}")
 	public PostResponse getPublished(@PathVariable String slug) {
 		return postResponseMapper.toResponse(postService.findPublishedBySlug(slug));
+	}
+
+	@GetMapping("/api/admin/posts/search")
+	public PagedResponse<PostResponse> searchAdmin(
+			@RequestParam String q,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size) {
+		if (q == null || q.trim().isEmpty()) {
+			return toPagedResponse(Page.empty(PageRequest.of(page, size)));
+		}
+		return toPagedResponse(postService.searchAll(q, PageRequest.of(page, size)).map(postResponseMapper::toResponse));
 	}
 
 	@GetMapping("/api/admin/posts")

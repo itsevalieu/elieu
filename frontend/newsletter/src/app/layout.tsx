@@ -11,6 +11,7 @@ import { Suspense } from "react";
 import { Analytics } from "@/components/Analytics";
 import { AdSenseScript } from "@/components/AdSlot";
 import { LayoutProvider } from "@/context/LayoutContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 /** Avoid prerender-time fetch to the API during `next build` when the backend is offline. */
 export const dynamic = "force-dynamic";
@@ -84,7 +85,9 @@ export default function RootLayout({
         <Analytics />
         <AdSenseScript />
         <Suspense fallback={<>{children}</>}>
-          <LayoutProvider>{children}</LayoutProvider>
+          <ThemeProvider>
+            <LayoutProvider>{children}</LayoutProvider>
+          </ThemeProvider>
         </Suspense>
       </body>
     </html>

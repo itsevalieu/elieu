@@ -13,7 +13,7 @@ export interface Post {
   galleryUrls: string[];
   videoUrl: string | null;
   videoType: 'hosted' | 'youtube' | 'vimeo' | null;
-  status: 'draft' | 'published' | 'archived';
+  status: 'draft' | 'published' | 'archived' | 'scheduled';
   format:
     | 'article'
     | 'photo-caption'
@@ -33,6 +33,8 @@ export interface Post {
   quoteSource: string | null;
   gameUrl: string | null;
   gameType: 'iframe' | 'canvas' | 'link' | null;
+  scheduledAt: string | null;
+  previewToken: string | null;
   viewCount: number;
   createdAt: string;
   updatedAt: string;

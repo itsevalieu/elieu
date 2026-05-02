@@ -4,6 +4,32 @@ Running log of all work sessions, decisions, and changes. Newest entries at the 
 
 ---
 
+## 2026-05-01 — Phase 13: Dark mode, search, scheduled publish & draft previews
+
+### Done
+- **Dark mode toggle**: Added `ThemeContext` + `ThemeToggle` component for both newspaper and magazine layouts. CSS variables defined for `[data-theme="dark"]` and `[data-theme="dark"][data-layout="magazine"]`. Respects `prefers-color-scheme` on first visit, persists to `localStorage`
+- **Full-text search**: PostgreSQL `tsvector`/GIN index on `posts(title, excerpt, body)` with weighted ranking (A/B/C). Added `GET /api/posts/search?q=` (public) and `GET /api/admin/posts/search?q=` (admin). Newsletter search page at `/search`. Admin posts list has inline search bar
+- **Scheduled publishing**: New `scheduled` status with `scheduled_at` column. Background `@Scheduled` job runs every 60 seconds to auto-publish due posts. Admin form shows datetime picker when status is "scheduled". Blue `StatusBadge` for scheduled posts
+- **Draft preview**: Every post gets a `preview_token` (UUID) on creation. Public `GET /api/posts/preview/{token}` returns any post regardless of status. Newsletter preview page at `/preview/{token}` with "Draft Preview — not published" banner. Admin form shows copyable preview link for saved posts
+
+### Added files
+- `backend/newsletter-api/src/main/resources/db/migration/V14__add_search_scheduled_preview.sql`
+- `backend/newsletter-api/src/main/java/com/evalieu/newsletter/service/PostSchedulerService.java`
+- `frontend/newsletter/src/context/ThemeContext.tsx`
+- `frontend/newsletter/src/components/shared/ThemeToggle.tsx` + `.module.scss`
+- `frontend/newsletter/src/app/search/page.tsx` + `.module.scss`
+- `frontend/newsletter/src/app/preview/[token]/page.tsx` + `.module.scss`
+- `docs/phases/phase-13-dark-search-schedule-preview.md`
+
+### Changed files
+- `backend/newsletter-api`: `Post.java`, `PostRequest.java`, `PostResponse.java`, `PostRepository.java`, `PostService.java`, `PostController.java`, `PostResponseMapper.java`, `NewsletterApplication.java`
+- `frontend/common/src/types/post.ts`: added `scheduled` status, `scheduledAt`, `previewToken`
+- `frontend/newsletter`: `globals.scss`, `layout.tsx`, `FrontPageContent.tsx`, `CategoryStrip.tsx`, post page styles
+- `frontend/admin`: `AdminPostForm.tsx`, `posts/page.tsx`, `StatusBadge.tsx`
+- `docs/ROADMAP.md`, `docs/CHANGELOG.md`
+
+---
+
 ## 2026-05-01 — Phase 12 prep: Deployment fixes & go-live plan
 
 ### Done

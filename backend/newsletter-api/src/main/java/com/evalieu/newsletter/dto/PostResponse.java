@@ -36,6 +36,8 @@ public class PostResponse {
 	private String quoteSource;
 	private String gameUrl;
 	private String gameType;
+	private Instant scheduledAt;
+	private String previewToken;
 	private int viewCount;
 	private Instant createdAt;
 	private Instant updatedAt;

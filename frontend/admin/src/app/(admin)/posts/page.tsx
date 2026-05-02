@@ -2,7 +2,7 @@
 
 import type { PagedResponse, Post } from '@evalieu/common';
 import Link from 'next/link';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 import { AdminPostActions } from '@/components/admin/AdminPostRowActions';
@@ -14,12 +14,24 @@ function fetchPosts(page: number, size: number) {
   return newsletterApi.get<PagedResponse<Post>>(`/api/admin/posts?page=${page}&size=${size}`);
 }
 
+function searchPosts(q: string, page: number, size: number) {
+  return newsletterApi.get<PagedResponse<Post>>(`/api/admin/posts/search?q=${encodeURIComponent(q)}&page=${page}&size=${size}`);
+}
+
 export default function PostsPage() {
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(20);
-  const swrKey = `/api/admin/posts?page=${page}&size=${size}` as const;
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeSearch, setActiveSearch] = useState('');
 
-  const { data, error, isLoading, mutate } = useSWR(swrKey, () => fetchPosts(page, size));
+  const swrKey = useMemo(() => {
+    if (activeSearch) return `/api/admin/posts/search?q=${activeSearch}&page=${page}&size=${size}`;
+    return `/api/admin/posts?page=${page}&size=${size}`;
+  }, [activeSearch, page, size]);
+
+  const { data, error, isLoading, mutate } = useSWR(swrKey, () =>
+    activeSearch ? searchPosts(activeSearch, page, size) : fetchPosts(page, size),
+  );
 
   const refetch = useCallback(() => void mutate(), [mutate]);
 
@@ -58,6 +70,38 @@ export default function PostsPage() {
           New post
         </Link>
       </div>
+
+      <form
+        className="flex gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setPage(0);
+          setActiveSearch(searchQuery.trim());
+        }}
+      >
+        <input
+          type="search"
+          placeholder="Search posts..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="flex-1 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+        />
+        <button
+          type="submit"
+          className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50"
+        >
+          Search
+        </button>
+        {activeSearch && (
+          <button
+            type="button"
+            onClick={() => { setSearchQuery(''); setActiveSearch(''); setPage(0); }}
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-500 shadow-sm hover:bg-zinc-50"
+          >
+            Clear
+          </button>
+        )}
+      </form>
 
       {error ? (
         <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">

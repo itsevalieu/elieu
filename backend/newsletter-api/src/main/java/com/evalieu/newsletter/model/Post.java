@@ -105,6 +105,12 @@ public class Post {
 	@Column(name = "game_type", length = 10)
 	private String gameType;
 
+	@Column(name = "scheduled_at")
+	private Instant scheduledAt;
+
+	@Column(name = "preview_token", length = 64)
+	private String previewToken;
+
 	@Column(name = "view_count", nullable = false)
 	@Builder.Default
 	private int viewCount = 0;

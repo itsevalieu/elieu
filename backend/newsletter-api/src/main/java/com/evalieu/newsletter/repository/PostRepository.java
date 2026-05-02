@@ -18,7 +18,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	Page<Post> findByStatus(String status, Pageable pageable);
 
-	/** Top published posts by view count (fixed cap for dashboard queries). */
 	List<Post> findTop10ByStatusOrderByViewCountDesc(String status);
 
 	Page<Post> findByStatusAndCategoryId(String status, Long categoryId, Pageable pageable);
@@ -39,4 +38,18 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 			@Param("status") String status,
 			@Param("since") Instant since,
 			Pageable pageable);
+
+	@Query(value = "SELECT * FROM posts WHERE status = 'published' AND search_vector @@ plainto_tsquery('english', :query) ORDER BY ts_rank(search_vector, plainto_tsquery('english', :query)) DESC",
+			countQuery = "SELECT COUNT(*) FROM posts WHERE status = 'published' AND search_vector @@ plainto_tsquery('english', :query)",
+			nativeQuery = true)
+	Page<Post> searchPublished(@Param("query") String query, Pageable pageable);
+
+	@Query(value = "SELECT * FROM posts WHERE search_vector @@ plainto_tsquery('english', :query) ORDER BY ts_rank(search_vector, plainto_tsquery('english', :query)) DESC",
+			countQuery = "SELECT COUNT(*) FROM posts WHERE search_vector @@ plainto_tsquery('english', :query)",
+			nativeQuery = true)
+	Page<Post> searchAll(@Param("query") String query, Pageable pageable);
+
+	List<Post> findByStatusAndScheduledAtBefore(String status, Instant cutoff);
+
+	Optional<Post> findByPreviewToken(String previewToken);
 }

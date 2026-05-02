@@ -48,7 +48,8 @@ export const postFormSchema = z
     subcategoryId: idOrEmpty,
     format: z.enum(FORMATS),
     layoutHint: z.enum(LAYOUTS),
-    status: z.enum(['draft', 'published', 'archived']),
+    status: z.enum(['draft', 'published', 'archived', 'scheduled']),
+    scheduledAt: z.string().optional(),
     tags: z.string(),
     coverImageUrl: z.string().optional(),
     galleryUrls: z.array(z.string()),
@@ -90,6 +91,7 @@ function valuesFromPost(p: Post): PostFormValues {
     format: p.format,
     layoutHint: p.layoutHint,
     status: p.status,
+    scheduledAt: p.scheduledAt ? new Date(p.scheduledAt).toISOString().slice(0, 16) : '',
     tags: (p.tags ?? []).join(', '),
     coverImageUrl: p.coverImageUrl ?? '',
     galleryUrls: p.galleryUrls?.length ? [...p.galleryUrls] : [''],
@@ -112,6 +114,7 @@ const EMPTY: PostFormValues = {
   format: 'article',
   layoutHint: 'column',
   status: 'draft',
+  scheduledAt: '',
   tags: '',
   coverImageUrl: '',
   galleryUrls: [''],
@@ -151,6 +154,7 @@ function toPayload(v: PostFormValues): Record<string, unknown> {
     quoteSource: v.format === 'quote' ? v.quoteSource?.trim() || null : null,
     gameUrl: v.format === 'embedded-game' ? v.gameUrl?.trim() || null : null,
     gameType: v.format === 'embedded-game' ? v.gameType : null,
+    scheduledAt: v.status === 'scheduled' && v.scheduledAt ? new Date(v.scheduledAt).toISOString() : null,
     issueId,
   };
 }
@@ -281,6 +285,7 @@ export function AdminPostForm({ postId, initialPost }: AdminPostFormProps) {
           <Select label="Status" required {...register('status')} error={errors.status?.message}>
             <option value="draft">draft</option>
             <option value="published">published</option>
+            <option value="scheduled">scheduled</option>
             <option value="archived">archived</option>
           </Select>
           <Select label="Issue" {...register('issueId')} error={errors.issueId?.message as string | undefined}>
@@ -292,6 +297,36 @@ export function AdminPostForm({ postId, initialPost }: AdminPostFormProps) {
             ))}
           </Select>
         </div>
+
+        {watch('status') === 'scheduled' && (
+          <Input
+            label="Publish at"
+            type="datetime-local"
+            {...register('scheduledAt')}
+            error={errors.scheduledAt?.message}
+          />
+        )}
+
+        {initialPost?.previewToken && (
+          <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3">
+            <p className="text-sm font-medium text-blue-800">Preview link</p>
+            <p className="mt-1 break-all text-xs text-blue-700">
+              {typeof window !== 'undefined'
+                ? `${window.location.protocol}//${window.location.hostname.replace('admin', 'newsletter')}:3001/preview/${initialPost.previewToken}`
+                : `/preview/${initialPost.previewToken}`}
+            </p>
+            <button
+              type="button"
+              className="mt-2 text-xs font-medium text-blue-600 hover:text-blue-800"
+              onClick={() => {
+                const base = process.env.NEXT_PUBLIC_NEWSLETTER_URL || `${window.location.protocol}//localhost:3001`;
+                void navigator.clipboard.writeText(`${base}/preview/${initialPost.previewToken}`);
+              }}
+            >
+              Copy link
+            </button>
+          </div>
+        )}
 
         <Input label="Tags (comma-separated)" {...register('tags')} error={errors.tags?.message} />
         <ImageUpload

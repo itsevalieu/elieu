@@ -35,6 +35,7 @@ Personal newspaper/magazine blog and portfolio platform. Full product plan lives
 | 10 | React Native Mobile App | `[x]` | [phase-10-mobile-app.md](phases/phase-10-mobile-app.md) |
 | 11 | Hardening, Polish & Testing | `[x]` | [phase-11-hardening.md](phases/phase-11-hardening.md) |
 | 12 | Production Deployment & Go-Live | `[ ]` | [phase-12-production-deployment.md](phases/phase-12-production-deployment.md) |
+| 13 | Dark Mode, Search, Scheduled Publish & Previews | `[x]` | [phase-13-dark-search-schedule-preview.md](phases/phase-13-dark-search-schedule-preview.md) |
 
 ---
 
