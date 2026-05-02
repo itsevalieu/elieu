@@ -38,19 +38,19 @@
 
 .widgetTitle {
   font-family: var(--font-headline);
-  font-size: 0.72rem;
+  font-size: var(--text-sm);
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   color: var(--color-accent);
   margin-bottom: var(--spacing-xs);
 }
 
 .widgetIntro {
-  font-size: 0.72rem;
+  font-size: var(--text-base);
   color: var(--color-muted);
   margin-bottom: var(--spacing-sm);
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 /* Magazine footer */
@@ -84,9 +84,9 @@
 
 .footerLink {
   font-family: var(--font-headline);
-  font-size: 0.72rem;
+  font-size: var(--text-xs);
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   color: var(--color-muted);
   transition: color 0.15s ease;
 }
@@ -98,5 +98,5 @@
 .footerSep {
   color: var(--color-rule);
   opacity: 0.35;
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
 }

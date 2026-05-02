@@ -43,9 +43,9 @@
   margin-right: calc(-1 * var(--spacing-md));
   padding-left: var(--spacing-md);
   padding-right: var(--spacing-md);
-  font-size: 0.68rem;
+  font-size: var(--text-xs);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   color: var(--color-muted);
   font-family: var(--font-headline);
 }

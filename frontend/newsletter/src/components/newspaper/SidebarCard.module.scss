@@ -1,6 +1,6 @@
 /* ── Text-only sidebar card ── */
 .card {
-  padding: var(--spacing-xs) 0;
+  padding: var(--spacing-sm) 0;
   border-bottom: 1px dashed var(--color-rule);
 }
 
@@ -9,20 +9,20 @@
 }
 
 .overline {
-  font-size: 0.58rem;
+  font-size: var(--text-xs);
   text-transform: uppercase;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   color: var(--color-accent);
   font-family: var(--font-headline);
-  margin-bottom: 0.1rem;
+  margin-bottom: var(--spacing-xs);
 }
 
 .title {
   font-family: var(--font-headline);
-  font-size: 0.85rem;
+  font-size: var(--text-md);
   font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 0.15rem;
+  line-height: 1.25;
+  margin-bottom: var(--spacing-xs);
 }
 
 .link {
@@ -34,8 +34,8 @@
 }
 
 .blurb {
-  font-size: 0.72rem;
-  line-height: 1.4;
+  font-size: var(--text-base);
+  line-height: 1.5;
   color: var(--color-muted);
   text-align: justify;
   hyphens: auto;
@@ -64,31 +64,31 @@
   position: absolute;
   inset: auto 0 0 0;
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
-  padding: var(--spacing-lg) var(--spacing-sm) var(--spacing-sm);
+  padding: var(--spacing-xl) var(--spacing-md) var(--spacing-md);
   color: #fff;
 }
 
 .imageOverline {
   display: block;
-  font-size: 0.55rem;
+  font-size: var(--text-xs);
   text-transform: uppercase;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   font-family: var(--font-headline);
   opacity: 0.85;
-  margin-bottom: 0.1rem;
+  margin-bottom: var(--spacing-xs);
 }
 
 .imageTitle {
   font-family: var(--font-headline);
-  font-size: 0.95rem;
+  font-size: var(--text-lg);
   font-weight: 800;
-  line-height: 1.15;
-  margin-bottom: 0.15rem;
+  line-height: 1.2;
+  margin-bottom: var(--spacing-xs);
 }
 
 .imageBlurb {
-  font-size: 0.68rem;
-  line-height: 1.35;
+  font-size: var(--text-base);
+  line-height: 1.45;
   opacity: 0.9;
   margin: 0;
 }

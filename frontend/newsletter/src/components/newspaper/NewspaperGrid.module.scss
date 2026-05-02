@@ -7,19 +7,20 @@
 /* ── Main + sidebar row — sidebar starts at top ── */
 .contentRow {
   display: grid;
-  grid-template-columns: 1fr 260px;
+  grid-template-columns: 1fr 280px;
   gap: 0;
   align-items: start;
 }
 
 .mainContent {
   min-width: 0;
+  padding-right: var(--spacing-lg);
 }
 
 .featured {
   border-bottom: 2px solid var(--color-rule);
-  padding-bottom: var(--spacing-sm);
-  margin-bottom: var(--spacing-xs);
+  padding-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
 }
 
 /* ── 3-col card grid (per section) ── */
@@ -30,7 +31,7 @@
 }
 
 .cell {
-  padding: var(--spacing-sm);
+  padding: var(--spacing-md);
   border-right: 1px solid var(--color-rule);
   border-bottom: 1px solid var(--color-rule);
   min-width: 0;
@@ -51,30 +52,30 @@
 
 /* ── Sidebar ── */
 .sidebar {
-  padding-left: var(--spacing-md);
+  padding-left: var(--spacing-lg);
   border-left: 2px solid var(--color-rule);
 }
 
 .sidebarTitle {
   font-family: var(--font-headline);
-  font-size: 0.72rem;
+  font-size: var(--text-sm);
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   color: var(--color-accent);
   border-bottom: 1px solid var(--color-rule);
   padding-bottom: var(--spacing-xs);
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
 }
 
 .sidebarSection {
-  margin-top: var(--spacing-md);
-  padding-top: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-md);
   border-top: 2px solid var(--color-rule);
 }
 
 .sidebarFooter {
-  margin-top: var(--spacing-md);
+  margin-top: var(--spacing-lg);
   padding-top: var(--spacing-md);
   border-top: 2px solid var(--color-rule);
 }
@@ -82,8 +83,8 @@
 /* ── Grid footer ── */
 .gridFooter {
   border-top: 2px solid var(--color-rule);
-  margin-top: var(--spacing-md);
-  padding-top: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
 }
 
 /* ── Responsive ── */
@@ -112,12 +113,16 @@
     border-right: none;
   }
 
+  .mainContent {
+    padding-right: 0;
+  }
+
   .sidebar {
     border-left: none;
     border-top: 2px solid var(--color-rule);
     padding-left: 0;
-    padding-top: var(--spacing-md);
-    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-lg);
+    margin-top: var(--spacing-md);
     position: static;
     max-height: none;
   }

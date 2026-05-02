@@ -18,10 +18,10 @@
 
 .quote {
   font-family: var(--font-headline);
-  font-size: 0.78rem;
+  font-size: var(--text-md);
   font-style: italic;
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.4;
   color: var(--color-ink);
   margin: 0;
   padding-left: var(--spacing-sm);
@@ -30,10 +30,10 @@
 
 .author {
   display: block;
-  font-size: 0.6rem;
+  font-size: var(--text-xs);
   font-style: normal;
   color: var(--color-muted);
-  margin-top: 0.2rem;
+  margin-top: var(--spacing-xs);
   padding-left: var(--spacing-sm);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }

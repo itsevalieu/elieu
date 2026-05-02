@@ -17,15 +17,24 @@
   --spacing-md: 1rem;
   --spacing-lg: 2rem;
   --spacing-xl: 3rem;
+
+  /* Accessible type scale (min 12px) */
+  --text-xs: 0.75rem;     /* 12px — smallest allowed */
+  --text-sm: 0.8125rem;   /* 13px — overlines, labels */
+  --text-base: 0.875rem;  /* 14px — sidebar, meta */
+  --text-md: 1rem;        /* 16px — body, excerpts */
+  --text-lg: 1.125rem;    /* 18px — card headlines */
+  --text-xl: 1.25rem;     /* 20px — wide headlines */
+  --text-2xl: 1.5rem;     /* 24px — section headlines */
 }
 
-/* Tighter spacing for the newspaper layout */
+/* Newspaper layout spacing — roomier than before */
 [data-layout="newspaper"] {
-  --spacing-xs: 0.2rem;
-  --spacing-sm: 0.35rem;
-  --spacing-md: 0.7rem;
-  --spacing-lg: 1.25rem;
-  --spacing-xl: 2rem;
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2.5rem;
 }
 
 /* Dark — newspaper */
@@ -82,9 +91,10 @@
 
 body {
   font-family: var(--font-body), Georgia, serif;
+  font-size: var(--text-md);
   color: var(--color-ink);
   background: var(--color-bg);
-  line-height: 1.5;
+  line-height: 1.6;
   transition: background 0.3s ease, color 0.3s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
