@@ -4,6 +4,31 @@ Running log of all work sessions, decisions, and changes. Newest entries at the 
 
 ---
 
+## 2026-05-02 — Multi-emoji reactions, category reorganization, newspaper redesign
+
+### Done
+- **Multi-emoji reactions**: Changed unique constraint from `(post_id, session_id)` to `(post_id, session_id, emoji)` so users can react with multiple emojis per post. Backend `react()` now toggles individual emojis. Frontend tracks in-flight state per emoji for correct optimistic updates and rollback
+- **Category reorganization**: Consolidated six top-level categories into two (Hobbies, Lifestyle) with subcategories. Expanded seed data to 3 posts per subcategory (24 total) with Unsplash cover images. Updated design-system tokens and category color mappings
+- **Subcategory display + filtering**: Added `subcategoryName` to `PostResponse` DTO. All excerpt/card components now display subcategory names (e.g. "Short Stories") instead of just parent category. Added subcategory query param to posts API endpoint and category page for filtered views
+- **Category bar UI overhaul**: Replaced text search link with Lucide Search icon that toggles an inline search bar. Category links expand subcategory subbars on click. Removed "Sections" label, moved "Issues" to footer, added Portfolio external link. Added `lucide-react` dependency
+- **Newspaper layout redesign**: Overhauled front page to match a traditional broadsheet — simplified masthead, 3-column CSS grid + sidebar, varied card sizes (wide/full/default/compact), conditional multi-column text, `SectionDivider` (rule + banner variants), `SidebarCard` (text + image overlay), `QuoteSidebarCard`, relocated subscribe/recommend/kofi into the grid
+- **Phase 15 plan**: Created issue layout builder plan — hybrid curation + algorithm system with drag-and-drop admin UI
+
+### Added files
+- `backend/.../db/migration/V15__allow_multiple_reactions_per_session.sql`
+- `frontend/newsletter/src/components/newspaper/SectionDivider.tsx` + `.module.scss`
+- `frontend/newsletter/src/components/newspaper/SidebarCard.tsx` + `.module.scss`
+- `frontend/newsletter/src/components/newspaper/QuoteSidebarCard.tsx` + `.module.scss`
+- `docs/phases/phase-15-issue-layout-builder.md`
+
+### Changed files
+- Backend: `Reaction.java`, `ReactionRepository.java`, `ReactionService.java`, `DataSeeder.java`, `V2__create_categories.sql`, `PostResponse.java`, `PostResponseMapper.java`, `SubcategoryRepository.java`, `PostRepository.java`, `PostService.java`, `PostController.java`
+- Frontend design-system: `tokens.css`, `colors.ts`
+- Frontend newsletter: `FrontPageContent.tsx/.scss`, `CategoryStrip.tsx/.scss`, `Masthead.tsx/.scss`, `NewspaperGrid.tsx/.scss`, `ExcerptCard.tsx/.scss`, `FeaturedArticle.tsx/.scss`, `MagazineHeader.tsx`, `MagazineCard.tsx`, `MagazineHero.tsx`, `ReactionBar.tsx/.scss`, `categoryColors.ts`, `issueDisplay.ts`, `api.ts`, `globals.scss`, `next.config.ts`, `page.tsx`, `posts/[slug]/page.tsx`, `preview/[token]/page.tsx`, `search/page.tsx`, `categories/[slug]/page.tsx`
+- Docs: `ROADMAP.md`, `CHANGELOG.md`
+
+---
+
 ## 2026-05-02 — Phase 14: Design System & UI Library
 
 ### Done

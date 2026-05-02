@@ -14,7 +14,7 @@ Personal newspaper/magazine blog and portfolio platform. Full product plan lives
 
 ## Current Focus
 
-> Phase 12 — Production Deployment & Go-Live
+> Phase 15 — Issue Layout Builder
 
 ---
 
@@ -37,6 +37,7 @@ Personal newspaper/magazine blog and portfolio platform. Full product plan lives
 | 12 | Production Deployment & Go-Live | `[ ]` | [phase-12-production-deployment.md](phases/phase-12-production-deployment.md) |
 | 13 | Dark Mode, Search, Scheduled Publish & Previews | `[x]` | [phase-13-dark-search-schedule-preview.md](phases/phase-13-dark-search-schedule-preview.md) |
 | 14 | Design System & UI Library | `[x]` | [phase-14-design-system.md](phases/phase-14-design-system.md) |
+| 15 | Issue Layout Builder | `[ ]` | [phase-15-issue-layout-builder.md](phases/phase-15-issue-layout-builder.md) |
 
 ---
 
