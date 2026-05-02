@@ -160,10 +160,6 @@
 
 /* --- Category accent palette --- */
 :root {
-  --ds-cat-writing: hsl(210, 60%, 50%);
-  --ds-cat-projects: hsl(150, 50%, 40%);
-  --ds-cat-reviews: hsl(30, 80%, 50%);
-  --ds-cat-life: hsl(340, 60%, 50%);
-  --ds-cat-tracking: hsl(270, 50%, 50%);
-  --ds-cat-games: hsl(180, 60%, 40%);
+  --ds-cat-hobbies: hsl(210, 60%, 50%);
+  --ds-cat-lifestyle: hsl(340, 60%, 50%);
 }

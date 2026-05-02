@@ -14,9 +14,5 @@ CREATE TABLE subcategories (
 );
 
 INSERT INTO categories (name, slug, sort_order) VALUES
-('Writing', 'writing', 1),
-('Projects', 'projects', 2),
-('Reviews', 'reviews', 3),
-('Life', 'life', 4),
-('Tracking', 'tracking', 5),
-('Games', 'games', 6);
+('Hobbies', 'hobbies', 1),
+('Lifestyle', 'lifestyle', 2);
