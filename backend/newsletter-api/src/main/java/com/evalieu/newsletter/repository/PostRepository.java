@@ -22,6 +22,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	Page<Post> findByStatusAndCategoryId(String status, Long categoryId, Pageable pageable);
 
+	Page<Post> findByStatusAndSubcategoryId(String status, Long subcategoryId, Pageable pageable);
+
 	List<Post> findByIssueIdAndStatus(Long issueId, String status);
 
 	@Query("SELECT COUNT(p) FROM Post p WHERE p.status = :status")

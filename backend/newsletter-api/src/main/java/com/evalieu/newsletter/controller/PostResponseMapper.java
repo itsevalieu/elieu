@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import com.evalieu.newsletter.dto.PostResponse;
 import com.evalieu.newsletter.model.Post;
 import com.evalieu.newsletter.repository.CategoryRepository;
+import com.evalieu.newsletter.repository.SubcategoryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class PostResponseMapper {
 
 	private final CategoryRepository categoryRepository;
+	private final SubcategoryRepository subcategoryRepository;
 
 	public PostResponse toResponse(Post post) {
 		String categoryName = null;
@@ -22,6 +24,13 @@ public class PostResponseMapper {
 			if (opt.isPresent()) {
 				categoryName = opt.get().getName();
 				categorySlug = opt.get().getSlug();
+			}
+		}
+		String subcategoryName = null;
+		if (post.getSubcategoryId() != null) {
+			var opt = subcategoryRepository.findById(post.getSubcategoryId());
+			if (opt.isPresent()) {
+				subcategoryName = opt.get().getName();
 			}
 		}
 		return PostResponse.builder()
@@ -34,6 +43,7 @@ public class PostResponseMapper {
 				.subcategoryId(post.getSubcategoryId())
 				.categoryName(categoryName)
 				.categorySlug(categorySlug)
+				.subcategoryName(subcategoryName)
 				.coverImageUrl(post.getCoverImageUrl())
 				.galleryUrls(post.getGalleryUrls())
 				.videoUrl(post.getVideoUrl())

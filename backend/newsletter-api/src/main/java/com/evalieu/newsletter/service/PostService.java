@@ -30,11 +30,14 @@ public class PostService {
 	private final AuditLogService auditLogService;
 
 	@Transactional(readOnly = true)
-	public Page<Post> findPublished(Long categoryId, Pageable pageable) {
-		if (categoryId == null) {
-			return postRepository.findByStatus("published", pageable);
+	public Page<Post> findPublished(Long categoryId, Long subcategoryId, Pageable pageable) {
+		if (subcategoryId != null) {
+			return postRepository.findByStatusAndSubcategoryId("published", subcategoryId, pageable);
 		}
-		return postRepository.findByStatusAndCategoryId("published", categoryId, pageable);
+		if (categoryId != null) {
+			return postRepository.findByStatusAndCategoryId("published", categoryId, pageable);
+		}
+		return postRepository.findByStatus("published", pageable);
 	}
 
 	@Transactional

@@ -33,7 +33,7 @@ export default async function PreviewPage(props: Props) {
       </div>
       <article className={styles.article}>
         <p className={styles.overline}>
-          {post.categoryName ?? "Uncategorized"}
+          {post.subcategoryName ?? post.categoryName ?? "Uncategorized"}
         </p>
         <h1 className={styles.title}>{post.title}</h1>
         <div className={styles.byline}>

@@ -35,7 +35,7 @@ export function MagazineCard({ post }: Props) {
           className={styles.badge}
           style={{ backgroundColor: `${accent}18`, color: accent }}
         >
-          {post.categoryName}
+          {post.subcategoryName ?? post.categoryName}
         </Link>
         <h3 className={styles.headline}>
           <Link href={`/posts/${post.slug}`} className={styles.headlineLink}>

@@ -55,13 +55,15 @@ export async function getIssueBySlug(slug: string): Promise<Issue | null> {
 export async function getPublishedPosts(
   page = 0,
   size = 20,
-  category?: string
+  category?: string,
+  subcategory?: string,
 ): Promise<PagedResponse<Post>> {
   const qs = new URLSearchParams({
     page: String(page),
     size: String(size),
   });
-  if (category) qs.set("category", category);
+  if (subcategory) qs.set("subcategory", subcategory);
+  else if (category) qs.set("category", category);
   return apiFetch<PagedResponse<Post>>(`/api/posts?${qs}`);
 }
 

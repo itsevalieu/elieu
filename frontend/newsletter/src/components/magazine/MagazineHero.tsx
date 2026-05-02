@@ -32,7 +32,7 @@ export function MagazineHero({ post }: Props) {
           className={styles.badge}
           style={{ borderColor: accent, color: accent }}
         >
-          {post.categoryName}
+          {post.subcategoryName ?? post.categoryName}
         </Link>
         <h2 id="magazine-hero-heading" className={styles.headline}>
           <Link href={`/posts/${post.slug}`} className={styles.headlineLink}>

@@ -61,7 +61,7 @@ export default async function PostPage(props: Props) {
       <Masthead />
       <article className={styles.article}>
         <p className={styles.overline}>
-          <Link href={`/categories/${post.categorySlug}`}>{post.categoryName}</Link>
+          <Link href={`/categories/${post.categorySlug}`}>{post.subcategoryName ?? post.categoryName}</Link>
         </p>
         <h1 className={styles.title}>{post.title}</h1>
         <div className={styles.byline}>

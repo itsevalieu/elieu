@@ -84,7 +84,7 @@ export default function SearchPage() {
                   <p className={styles.excerpt}>{post.excerpt}</p>
                 )}
                 <span className={styles.postMeta}>
-                  {post.categoryName}
+                  {post.subcategoryName ?? post.categoryName}
                   {post.publishedAt
                     ? ` · ${new Date(post.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}`
                     : ""}

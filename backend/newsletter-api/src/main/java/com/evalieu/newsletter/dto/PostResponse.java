@@ -20,6 +20,7 @@ public class PostResponse {
 	private Long subcategoryId;
 	private String categoryName;
 	private String categorySlug;
+	private String subcategoryName;
 	private String coverImageUrl;
 	private List<String> galleryUrls;
 	private String videoUrl;

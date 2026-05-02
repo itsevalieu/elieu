@@ -17,6 +17,7 @@ import com.evalieu.newsletter.dto.PagedResponse;
 import com.evalieu.newsletter.dto.PostRequest;
 import com.evalieu.newsletter.dto.PostResponse;
 import com.evalieu.newsletter.repository.CategoryRepository;
+import com.evalieu.newsletter.repository.SubcategoryRepository;
 import com.evalieu.newsletter.service.PostService;
 
 import jakarta.validation.Valid;
@@ -29,21 +30,31 @@ public class PostController extends PagingControllerSupport {
 	private final PostService postService;
 	private final PostResponseMapper postResponseMapper;
 	private final CategoryRepository categoryRepository;
+	private final SubcategoryRepository subcategoryRepository;
 
 	@GetMapping("/api/posts")
 	public PagedResponse<PostResponse> listPublished(
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size,
-			@RequestParam(required = false) String category) {
+			@RequestParam(required = false) String category,
+			@RequestParam(required = false) String subcategory) {
+		Long subcategoryId = null;
+		if (StringUtils.hasText(subcategory)) {
+			var sub = subcategoryRepository.findBySlug(subcategory.trim());
+			if (sub.isEmpty()) {
+				return toPagedResponse(Page.empty(PageRequest.of(page, size)));
+			}
+			subcategoryId = sub.get().getId();
+		}
 		Long categoryId = null;
-		if (StringUtils.hasText(category)) {
+		if (subcategoryId == null && StringUtils.hasText(category)) {
 			var cat = categoryRepository.findBySlug(category.trim());
 			if (cat.isEmpty()) {
 				return toPagedResponse(Page.empty(PageRequest.of(page, size)));
 			}
 			categoryId = cat.get().getId();
 		}
-		var result = postService.findPublished(categoryId, PageRequest.of(page, size));
+		var result = postService.findPublished(categoryId, subcategoryId, PageRequest.of(page, size));
 		return toPagedResponse(result.map(postResponseMapper::toResponse));
 	}
 
