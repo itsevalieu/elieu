@@ -27,6 +27,7 @@ public class ReactionService {
 	private final ReactionRepository reactionRepository;
 	private final PostRepository postRepository;
 
+	/** Toggle a specific emoji: adds it if not yet reacted, removes it if already reacted. */
 	@Transactional
 	public Post react(Long postId, String emoji, String sessionId) {
 		if (!ALLOWED_EMOJI.contains(emoji)) {
@@ -39,23 +40,24 @@ public class ReactionService {
 		postRepository.findById(postId)
 				.orElseThrow(() -> new ResourceNotFoundException("Post not found: " + postId));
 
-		reactionRepository.findByPostIdAndSessionId(postId, sid)
-				.ifPresentOrElse(existing -> {
-					existing.setEmoji(emoji);
-					existing.setCreatedAt(Instant.now());
-					reactionRepository.save(existing);
-				}, () -> reactionRepository.save(Reaction.builder()
-						.postId(postId)
-						.emoji(emoji)
-						.sessionId(sid)
-						.createdAt(Instant.now())
-						.build()));
+		var existing = reactionRepository.findByPostIdAndSessionIdAndEmoji(postId, sid, emoji);
+		if (existing.isPresent()) {
+			reactionRepository.delete(existing.get());
+		} else {
+			reactionRepository.save(Reaction.builder()
+					.postId(postId)
+					.emoji(emoji)
+					.sessionId(sid)
+					.createdAt(Instant.now())
+					.build());
+		}
 
 		recalculateReactionCounts(postId);
 		return postRepository.findById(postId)
 				.orElseThrow(() -> new ResourceNotFoundException("Post not found: " + postId));
 	}
 
+	/** Remove all reactions from a session for a post. */
 	@Transactional
 	public void unreact(Long postId, String sessionId) {
 		String sid = sessionId == null ? "" : sessionId.trim();

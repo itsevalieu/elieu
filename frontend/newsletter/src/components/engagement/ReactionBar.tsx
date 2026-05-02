@@ -1,15 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Post } from "@evalieu/common";
-import { addReaction, removeReaction } from "@/lib/api";
+import { addReaction } from "@/lib/api";
 import styles from "./ReactionBar.module.scss";
 
 const ALLOWED_LIST = ["❤️", "🔥", "😂", "👏", "😮", "😢", "👍", "🎉", "💡", "💯", "🌱"] as const;
-const ALLOWED_KEYS = new Set<string>(ALLOWED_LIST);
 
 function reactionStorageKey(postId: number) {
-  return `evalieu_reaction:${postId}`;
+  return `evalieu_reactions:${postId}`;
 }
 
 function mergeCounts(initial: Record<string, number>): Record<string, number> {
@@ -31,6 +30,33 @@ function getSessionId(): string {
   }
 }
 
+function loadSelectedSet(postId: number): Set<string> {
+  try {
+    const raw = localStorage.getItem(reactionStorageKey(postId));
+    if (!raw) {
+      const legacy = localStorage.getItem(`evalieu_reaction:${postId}`);
+      if (legacy) {
+        localStorage.removeItem(`evalieu_reaction:${postId}`);
+        localStorage.setItem(reactionStorageKey(postId), JSON.stringify([legacy]));
+        return new Set([legacy]);
+      }
+      return new Set();
+    }
+    const arr = JSON.parse(raw) as string[];
+    return new Set(arr.filter((e) => ALLOWED_LIST.includes(e as typeof ALLOWED_LIST[number])));
+  } catch {
+    return new Set();
+  }
+}
+
+function saveSelectedSet(postId: number, set: Set<string>) {
+  const key = reactionStorageKey(postId);
+  try {
+    if (set.size === 0) localStorage.removeItem(key);
+    else localStorage.setItem(key, JSON.stringify([...set]));
+  } catch { /* ignore */ }
+}
+
 type Props = {
   postId: number;
   initialReactionCounts: Post["reactionCounts"];
@@ -38,42 +64,24 @@ type Props = {
 
 export function ReactionBar({ postId, initialReactionCounts }: Props) {
   const [counts, setCounts] = useState(() =>
-    mergeCounts(initialReactionCounts ?? {})
+    mergeCounts(initialReactionCounts ?? {}),
   );
 
   useEffect(() => {
     setCounts(mergeCounts(initialReactionCounts ?? {}));
   }, [initialReactionCounts, postId]);
 
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(reactionStorageKey(postId));
-      setSelected(saved && ALLOWED_KEYS.has(saved) ? saved : null);
-    } catch {
-      setSelected(null);
-    }
+    setSelected(loadSelectedSet(postId));
   }, [postId]);
 
-  const [pending, setPending] = useState(false);
+  const [inflight, setInflight] = useState<Set<string>>(new Set());
+  const inflightCountRef = useRef(0);
   const [error, setError] = useState<string | null>(null);
 
-  const persistSelection = useCallback((emoji: string | null) => {
-    const key = reactionStorageKey(postId);
-    try {
-      if (!emoji) localStorage.removeItem(key);
-      else localStorage.setItem(key, emoji);
-    } catch {
-      /* ignore quota / privacy mode */
-    }
-  }, [postId]);
-
-  const reconcileFromServer = (next: Record<string, number>) => {
-    setCounts(mergeCounts(next ?? {}));
-  };
-
-  const onPick = async (emoji: (typeof ALLOWED_LIST)[number]) => {
-    if (pending) return;
+  const onPick = (emoji: typeof ALLOWED_LIST[number]) => {
+    if (inflight.has(emoji)) return;
 
     const sessionId = getSessionId();
     if (!sessionId) {
@@ -81,60 +89,62 @@ export function ReactionBar({ postId, initialReactionCounts }: Props) {
       return;
     }
 
-    setPending(true);
     setError(null);
 
-    if (selected === emoji) {
-      const before = counts;
-      setCounts((prev) => {
-        const copy = mergeCounts(prev);
-        copy[emoji] = Math.max(0, (copy[emoji] ?? 0) - 1);
-        return copy;
-      });
-      setSelected(null);
-      persistSelection(null);
+    setInflight((prev) => new Set(prev).add(emoji));
+    inflightCountRef.current += 1;
 
-      try {
-        await removeReaction(postId, sessionId);
-      } catch {
-        setCounts(before);
-        setSelected(emoji);
-        persistSelection(emoji);
-        setError("Couldn’t remove your reaction. Try again.");
-      } finally {
-        setPending(false);
-      }
-      return;
+    const wasSelected = selected.has(emoji);
+
+    const nextSelected = new Set(selected);
+    if (wasSelected) {
+      nextSelected.delete(emoji);
+    } else {
+      nextSelected.add(emoji);
     }
 
-    const previous = selected;
-
-    const before = counts;
-
-    const optimisticSwap = (): Record<string, number> => {
-      const copy = mergeCounts(before);
-      if (previous) copy[previous] = Math.max(0, (copy[previous] ?? 0) - 1);
-      copy[emoji] = (copy[emoji] ?? 0) + 1;
+    setCounts((prev) => {
+      const copy = { ...prev };
+      copy[emoji] = wasSelected
+        ? Math.max(0, (copy[emoji] ?? 0) - 1)
+        : (copy[emoji] ?? 0) + 1;
       return copy;
-    };
+    });
+    setSelected(nextSelected);
+    saveSelectedSet(postId, nextSelected);
 
-    setCounts(optimisticSwap());
-    setSelected(emoji);
-    persistSelection(emoji);
-
-    try {
-      const post = await addReaction(postId, emoji, sessionId);
-      reconcileFromServer(post.reactionCounts ?? {});
-      setSelected(emoji);
-      persistSelection(emoji);
-    } catch {
-      setCounts(before);
-      setSelected(previous);
-      persistSelection(previous);
-      setError("Couldn’t save your reaction. Try again.");
-    } finally {
-      setPending(false);
-    }
+    addReaction(postId, emoji, sessionId)
+      .then((post) => {
+        inflightCountRef.current -= 1;
+        if (inflightCountRef.current === 0) {
+          setCounts(mergeCounts(post.reactionCounts ?? {}));
+        }
+      })
+      .catch(() => {
+        inflightCountRef.current -= 1;
+        setCounts((prev) => {
+          const copy = { ...prev };
+          copy[emoji] = wasSelected
+            ? (copy[emoji] ?? 0) + 1
+            : Math.max(0, (copy[emoji] ?? 0) - 1);
+          return copy;
+        });
+        setSelected((prev) => {
+          const rollback = new Set(prev);
+          if (wasSelected) rollback.add(emoji);
+          else rollback.delete(emoji);
+          saveSelectedSet(postId, rollback);
+          return rollback;
+        });
+        setError("Couldn't save your reaction. Try again.");
+      })
+      .finally(() => {
+        setInflight((prev) => {
+          const next = new Set(prev);
+          next.delete(emoji);
+          return next;
+        });
+      });
   };
 
   return (
@@ -142,16 +152,16 @@ export function ReactionBar({ postId, initialReactionCounts }: Props) {
       <span className={styles.label}>React</span>
       <div className={styles.reactionsRow}>
         {ALLOWED_LIST.map((emoji) => {
-          const active = selected === emoji;
+          const active = selected.has(emoji);
+          const loading = inflight.has(emoji);
           return (
             <button
               key={emoji}
               type="button"
-              className={`${styles.btn}${active ? ` ${styles.selected}` : ""}`}
+              className={`${styles.btn}${active ? ` ${styles.selected}` : ""}${loading ? ` ${styles.loading}` : ""}`}
               aria-pressed={active}
               aria-label={`React with ${emoji}`}
-              disabled={pending}
-              onClick={() => void onPick(emoji)}
+              onClick={() => onPick(emoji)}
             >
               <span aria-hidden>{emoji}</span>
               <span className={styles.count}>{counts[emoji] ?? 0}</span>

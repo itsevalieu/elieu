@@ -11,10 +11,14 @@ import com.evalieu.newsletter.model.Reaction;
 
 public interface ReactionRepository extends JpaRepository<Reaction, Long> {
 
-	Optional<Reaction> findByPostIdAndSessionId(Long postId, String sessionId);
+	Optional<Reaction> findByPostIdAndSessionIdAndEmoji(Long postId, String sessionId, String emoji);
+
+	List<Reaction> findAllByPostIdAndSessionId(Long postId, String sessionId);
 
 	@Query("SELECT r.emoji, COUNT(r) FROM Reaction r WHERE r.postId = :postId GROUP BY r.emoji")
 	List<Object[]> countByPostIdGroupByEmoji(@Param("postId") Long postId);
+
+	void deleteByPostIdAndSessionIdAndEmoji(Long postId, String sessionId, String emoji);
 
 	void deleteByPostIdAndSessionId(Long postId, String sessionId);
 }
