@@ -1,8 +1,8 @@
 .wrapper {
   max-width: 1200px;
   margin: 0 auto var(--spacing-md);
-  padding: 0 var(--spacing-lg);
-  border-bottom: 1px solid var(--color-rule);
+  padding: 0 var(--spacing-md);
+  border-bottom: 4px solid var(--color-rule);
   padding-bottom: var(--spacing-sm);
 }
 
@@ -16,12 +16,6 @@
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--color-muted);
-}
-
-.label {
-  font-family: var(--font-headline);
-  color: var(--color-rule);
-  margin-right: var(--spacing-sm);
 }
 
 .sep {
@@ -40,4 +34,125 @@
 .link:hover {
   border-bottom-color: var(--color-accent);
   color: var(--color-accent);
+}
+
+.catBtn {
+  all: unset;
+  cursor: pointer;
+  color: var(--color-ink);
+  border-bottom: 1px solid transparent;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.catBtn:hover {
+  border-bottom-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.catBtnActive {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+.searchBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-ink);
+  padding: 0.15rem;
+  border-radius: 2px;
+  transition: color 0.15s ease;
+}
+
+.searchBtn:hover {
+  color: var(--color-accent);
+}
+
+/* ── Subcategory subbar ── */
+
+.subBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm) var(--spacing-md);
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-xs);
+  animation: slideDown 0.15s ease-out;
+}
+
+.subLink {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-muted);
+  transition: color 0.15s ease;
+}
+
+.subLink:hover {
+  color: var(--color-accent);
+}
+
+/* ── Search bar ── */
+
+.searchBar {
+  display: flex;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  animation: slideDown 0.15s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.4rem 0.7rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  border: 1px solid var(--color-rule);
+  border-radius: 3px;
+  background: var(--color-input-bg, var(--color-bg));
+  color: var(--color-ink);
+  outline: none;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.searchInput:focus {
+  border-color: var(--color-accent);
+}
+
+.searchSubmit {
+  padding: 0.4rem 0.8rem;
+  font-family: var(--font-headline);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: var(--color-ink);
+  color: var(--color-bg);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.searchSubmit:hover {
+  opacity: 0.85;
 }
