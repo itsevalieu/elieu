@@ -97,10 +97,21 @@ The mobile app connects to `http://localhost:8081` in dev mode. On Android emula
 
 ### Admin credentials
 
-On `dev` and `docker` profiles, a default admin user is seeded automatically:
+On `dev` and `docker` profiles, a default admin user is seeded automatically. Credentials are controlled by environment variables:
 
-- **Email:** `admin@evalieu.local`
-- **Password:** `REDACTED_DEV_PASSWORD`
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SEED_ADMIN_EMAIL` | `admin@evalieu.local` | Seed admin email |
+| `SEED_ADMIN_PASSWORD` | (auto-generated UUID) | Seed admin password |
+
+For Docker Compose, the defaults are `admin@evalieu.local` / `localdev` (set in `docker-compose.yml`).
+
+For the `dev` profile (H2), if `SEED_ADMIN_PASSWORD` is not set, a random UUID is generated and logged at startup. Set the env vars before running:
+
+```bash
+SEED_ADMIN_EMAIL=me@test.com SEED_ADMIN_PASSWORD=mypassword \
+  ./gradlew bootRun --args='--spring.profiles.active=dev'
+```
 
 Sample categories, posts, hobbies, and an issue are also seeded on first startup.
 

@@ -24,14 +24,14 @@ import com.evalieu.newsletter.repository.IssueRepository;
 import com.evalieu.newsletter.repository.PostRepository;
 import com.evalieu.newsletter.repository.SubcategoryRepository;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import jakarta.transaction.Transactional;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Profile({"dev", "docker"})
-@RequiredArgsConstructor
 @Slf4j
 public class DataSeeder implements ApplicationRunner {
 
@@ -42,6 +42,29 @@ public class DataSeeder implements ApplicationRunner {
 	private final PostRepository postRepository;
 	private final HobbyRepository hobbyRepository;
 	private final PasswordEncoder passwordEncoder;
+
+	@Value("${seed.admin.email:admin@evalieu.local}")
+	private String seedAdminEmail;
+
+	@Value("${seed.admin.password:#{T(java.util.UUID).randomUUID().toString()}}")
+	private String seedAdminPassword;
+
+	public DataSeeder(
+			AdminUserRepository adminUserRepository,
+			CategoryRepository categoryRepository,
+			SubcategoryRepository subcategoryRepository,
+			IssueRepository issueRepository,
+			PostRepository postRepository,
+			HobbyRepository hobbyRepository,
+			PasswordEncoder passwordEncoder) {
+		this.adminUserRepository = adminUserRepository;
+		this.categoryRepository = categoryRepository;
+		this.subcategoryRepository = subcategoryRepository;
+		this.issueRepository = issueRepository;
+		this.postRepository = postRepository;
+		this.hobbyRepository = hobbyRepository;
+		this.passwordEncoder = passwordEncoder;
+	}
 
 	@Override
 	@Transactional
@@ -64,12 +87,12 @@ public class DataSeeder implements ApplicationRunner {
 
 	private void seedAdminUser() {
 		AdminUser admin = AdminUser.builder()
-				.email("admin@evalieu.local")
-				.passwordHash(passwordEncoder.encode("REDACTED_DEV_PASSWORD"))
+				.email(seedAdminEmail)
+				.passwordHash(passwordEncoder.encode(seedAdminPassword))
 				.createdAt(Instant.now())
 				.build();
 		adminUserRepository.save(admin);
-		log.info("Created admin user: admin@evalieu.local / REDACTED_DEV_PASSWORD");
+		log.info("Created admin user: {} (password from SEED_ADMIN_PASSWORD env var or auto-generated)", seedAdminEmail);
 	}
 
 	private List<Category> seedCategories() {

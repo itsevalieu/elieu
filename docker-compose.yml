@@ -26,6 +26,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: evalieu
       SERVER_PORT: "8081"
       JWT_SECRET: evalieu-local-dev-jwt-secret-change-in-production-minimum-32-chars
+      SEED_ADMIN_EMAIL: admin@evalieu.local
+      SEED_ADMIN_PASSWORD: localdev
       AWS_S3_BUCKET: evalieu-dev-media
       AWS_REGION: us-east-1
     depends_on:
