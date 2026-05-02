@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { Category, Post } from "@evalieu/common";
 import { splitFeaturedAndRest } from "@/lib/postDisplay";
+import { AdSlot } from "@/components/AdSlot";
 import { ExcerptCard } from "./ExcerptCard";
 import { FeaturedArticle } from "./FeaturedArticle";
 import { SectionDivider } from "./SectionDivider";
@@ -30,13 +31,15 @@ function buildSections(
 ): {
   sections: { categoryName: string; categorySlug: string; items: SlottedPost[] }[];
   quotes: Post[];
+  photos: Post[];
   sidebarFeatures: Post[];
 } {
-  const SIDEBAR_SUBS = new Set(["affirmations", "watercolors"]);
+  const SIDEBAR_SUBS = new Set(["affirmations", "watercolors", "photos"]);
 
   const postsBySubId = new Map<number, Post[]>();
   const postsByCatId = new Map<number, Post[]>();
   const quotes: Post[] = [];
+  const photos: Post[] = [];
   const sidebarFeatures: Post[] = [];
 
   for (const p of posts) {
@@ -67,8 +70,14 @@ function buildSections(
 
     for (const sub of cat.subcategories) {
       if (SIDEBAR_SUBS.has(sub.slug)) {
-        const rep = pick(postsBySubId.get(sub.id));
-        if (rep) sidebarFeatures.push(rep);
+        const reps = postsBySubId.get(sub.id) ?? [];
+        if (sub.slug === "photos") {
+          const rep = pick(reps);
+          if (rep) photos.push(rep);
+        } else {
+          const rep = pick(reps);
+          if (rep) sidebarFeatures.push(rep);
+        }
         continue;
       }
       const rep = pick(postsBySubId.get(sub.id));
@@ -96,12 +105,12 @@ function buildSections(
     sections.push({ categoryName: cat.name, categorySlug: cat.slug, items });
   }
 
-  return { sections, quotes, sidebarFeatures };
+  return { sections, quotes, photos, sidebarFeatures };
 }
 
 export function NewspaperGrid({ posts, categories, midSlot, sidebarFooter, gridFooter }: Props) {
   const { featured, rest } = splitFeaturedAndRest(posts);
-  const { sections, quotes, sidebarFeatures } = buildSections(rest, categories);
+  const { sections, quotes, photos, sidebarFeatures } = buildSections(rest, categories);
 
   const sidebarPosts: Post[] = [];
   const mainSections: typeof sections = [];
@@ -136,27 +145,48 @@ export function NewspaperGrid({ posts, categories, midSlot, sidebarFooter, gridF
 
           {midSlot ?? null}
 
-          {mainSections.map((section, si) => (
-            <div key={section.categorySlug}>
-              <SectionDivider
-                label={section.categoryName}
-                variant={si === 0 ? "rule" : "banner"}
-              />
-              <div className={styles.mainGrid}>
-                {section.items.map(({ post: p, variant }) => (
-                  <div
-                    key={p.id}
-                    className={`${styles.cell} ${
-                      variant === "wide" ? styles.cellWide :
-                      variant === "full" ? styles.cellFull : ""
-                    }`}
-                  >
-                    <ExcerptCard post={p} variant={variant} />
-                  </div>
-                ))}
+          {mainSections.map((section, si) => {
+            const cols = 3;
+            let used = 0;
+            for (const { variant } of section.items) {
+              if (variant === "full") { used += cols; }
+              else if (variant === "wide") { used += 2; }
+              else { used += 1; }
+            }
+            const remainder = used % cols;
+            const emptySlots = remainder === 0 ? 0 : cols - remainder;
+
+            return (
+              <div key={section.categorySlug}>
+                <SectionDivider
+                  label={section.categoryName}
+                  variant={si === 0 ? "rule" : "banner"}
+                />
+                <div className={styles.mainGrid}>
+                  {section.items.map(({ post: p, variant }) => (
+                    <div
+                      key={p.id}
+                      className={`${styles.cell} ${
+                        variant === "wide" ? styles.cellWide :
+                        variant === "full" ? styles.cellFull : ""
+                      }`}
+                    >
+                      <ExcerptCard post={p} variant={variant} />
+                    </div>
+                  ))}
+                  {emptySlots > 0 ? (
+                    <div
+                      className={`${styles.cell} ${styles.adCell} ${
+                        emptySlots >= 2 ? styles.cellWide : ""
+                      }`}
+                    >
+                      <AdSlot slot={`grid-${section.categorySlug}`} />
+                    </div>
+                  ) : null}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* ── Sidebar ── */}
@@ -179,6 +209,15 @@ export function NewspaperGrid({ posts, categories, midSlot, sidebarFooter, gridF
               <h3 className={styles.sidebarTitle}>Affirmations</h3>
               {quotes.map((q) => (
                 <QuoteSidebarCard key={q.id} post={q} />
+              ))}
+            </div>
+          ) : null}
+
+          {photos.length > 0 ? (
+            <div className={styles.sidebarSection}>
+              <h3 className={styles.sidebarTitle}>Photos</h3>
+              {photos.map((p) => (
+                <SidebarCard key={p.id} post={p} showImage={!!p.coverImageUrl} />
               ))}
             </div>
           ) : null}
