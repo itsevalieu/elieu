@@ -17,5 +17,5 @@ const MONTH = [
 
 export function formatIssueVolLine(issue: Issue): string {
   const m = MONTH[Math.max(0, Math.min(11, issue.month - 1))] ?? "";
-  return `${issue.title.toUpperCase()} · ${m} ${issue.year}, VOL. ${issue.year} NO. ${issue.month}`;
+  return `${m} ${issue.year} · Vol. ${issue.month}`;
 }

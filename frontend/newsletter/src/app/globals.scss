@@ -19,6 +19,15 @@
   --spacing-xl: 3rem;
 }
 
+/* Tighter spacing for the newspaper layout */
+[data-layout="newspaper"] {
+  --spacing-xs: 0.2rem;
+  --spacing-sm: 0.35rem;
+  --spacing-md: 0.7rem;
+  --spacing-lg: 1.25rem;
+  --spacing-xl: 2rem;
+}
+
 /* Dark — newspaper */
 [data-theme="dark"] {
   --color-bg: #1a1a1a;
@@ -75,8 +84,10 @@ body {
   font-family: var(--font-body), Georgia, serif;
   color: var(--color-ink);
   background: var(--color-bg);
-  line-height: 1.6;
+  line-height: 1.5;
   transition: background 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {

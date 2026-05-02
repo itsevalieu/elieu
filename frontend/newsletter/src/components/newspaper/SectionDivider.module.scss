@@ -1,0 +1,42 @@
+/* ── Rule variant (default) ── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: var(--spacing-sm) 0;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 2px;
+  background: var(--color-rule);
+}
+
+.label {
+  font-family: var(--font-headline);
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-ink);
+  white-space: nowrap;
+  padding: 0 var(--spacing-xs);
+}
+
+/* ── Banner variant (dark full-width bar) ── */
+.banner {
+  background: var(--color-ink);
+  color: var(--color-bg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin: var(--spacing-md) 0;
+}
+
+.bannerLabel {
+  font-family: var(--font-headline);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+}

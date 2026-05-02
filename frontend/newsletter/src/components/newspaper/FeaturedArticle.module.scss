@@ -1,55 +1,103 @@
-.newspaper {
-  max-width: 1200px;
-  margin: 0 auto var(--spacing-xl);
-  padding: 0 var(--spacing-lg);
+.article {
+  padding-bottom: var(--spacing-md);
+}
+
+.overline {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--color-muted);
+  font-family: var(--font-headline);
+  margin-bottom: 0.2rem;
 }
 
 .headlineLink {
-  display: inline-block;
-  margin-bottom: var(--spacing-md);
+  display: block;
+  margin-bottom: var(--spacing-sm);
 }
 
 .headline {
   font-family: var(--font-headline);
-  font-size: clamp(2rem, 5vw, 2.75rem);
-  line-height: 1.12;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 900;
+  font-style: italic;
+  line-height: 1.06;
   color: var(--color-ink);
-  border-bottom: 1px solid transparent;
 }
 
 .headlineLink:hover .headline {
   color: var(--color-accent);
-  border-bottom-color: var(--color-accent);
 }
 
-.cover {
+.body {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: flex-start;
+}
+
+.textCol {
+  flex: 1;
+  min-width: 0;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.imageCol {
+  flex: 0 0 40%;
+  max-width: 380px;
+  margin: 0;
+}
+
+.imageWrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 21 / 9;
+  aspect-ratio: 4 / 3;
   overflow: hidden;
-  border-top: 1px solid var(--color-rule);
-  border-bottom: 1px solid var(--color-rule);
-  margin-bottom: var(--spacing-md);
-  background: #eee9e0;
+  border: 1px solid var(--color-rule);
 }
 
-.coverImage {
+.image {
   object-fit: cover;
 }
 
-.excerpt {
-  font-size: 1rem;
+.caption {
+  font-size: 0.68rem;
+  font-style: italic;
   color: var(--color-muted);
-  max-width: 65ch;
-  text-align: justify;
-  hyphens: auto;
-  margin-bottom: var(--spacing-sm);
+  margin-top: 0.25rem;
+  line-height: 1.3;
+}
+
+.excerpt {
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--color-ink);
+  margin: 0;
 }
 
 .readMore {
-  font-size: 0.85rem;
+  display: inline-block;
+  margin-top: var(--spacing-sm);
+  font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--color-accent);
   font-family: var(--font-headline);
+  break-inside: avoid;
+}
+
+@media (max-width: 600px) {
+  .body {
+    flex-direction: column;
+  }
+
+  .textCol {
+    column-count: 1;
+  }
+
+  .imageCol {
+    flex: none;
+    max-width: 100%;
+    order: -1;
+  }
 }

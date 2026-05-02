@@ -1,20 +1,16 @@
 import { FrontPageContent } from "@/app/FrontPageContent";
 import {
   getCategories,
-  getLatestIssue,
   getPublishedPosts,
 } from "@/lib/api";
-import { formatIssueVolLine } from "@/lib/issueDisplay";
 import styles from "./page.module.scss";
 
 export default async function HomePage() {
-  const [postsPage, categories, latestIssue] = await Promise.all([
+  const [postsPage, categories] = await Promise.all([
     getPublishedPosts(0, 48),
     getCategories(),
-    getLatestIssue(),
   ]);
 
-  const issueLine = latestIssue ? formatIssueVolLine(latestIssue) : null;
   const posts = postsPage.content;
 
   return (
@@ -22,7 +18,6 @@ export default async function HomePage() {
       <FrontPageContent
         posts={posts}
         categories={categories}
-        issueLine={issueLine}
         kofiUrl={process.env.NEXT_PUBLIC_KOFI_URL}
       />
     </main>

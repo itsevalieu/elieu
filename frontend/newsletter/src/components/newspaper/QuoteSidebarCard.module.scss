@@ -1,0 +1,39 @@
+.card {
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px dashed var(--color-rule);
+}
+
+.card:last-child {
+  border-bottom: none;
+}
+
+.link {
+  display: block;
+  color: inherit;
+}
+
+.link:hover .quote {
+  color: var(--color-accent);
+}
+
+.quote {
+  font-family: var(--font-headline);
+  font-size: 0.78rem;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--color-ink);
+  margin: 0;
+  padding-left: var(--spacing-sm);
+  border-left: 2px solid var(--color-accent);
+}
+
+.author {
+  display: block;
+  font-size: 0.6rem;
+  font-style: normal;
+  color: var(--color-muted);
+  margin-top: 0.2rem;
+  padding-left: var(--spacing-sm);
+  letter-spacing: 0.05em;
+}
