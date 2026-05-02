@@ -36,6 +36,7 @@ Personal newspaper/magazine blog and portfolio platform. Full product plan lives
 | 11 | Hardening, Polish & Testing | `[x]` | [phase-11-hardening.md](phases/phase-11-hardening.md) |
 | 12 | Production Deployment & Go-Live | `[ ]` | [phase-12-production-deployment.md](phases/phase-12-production-deployment.md) |
 | 13 | Dark Mode, Search, Scheduled Publish & Previews | `[x]` | [phase-13-dark-search-schedule-preview.md](phases/phase-13-dark-search-schedule-preview.md) |
+| 14 | Design System & UI Library | `[x]` | [phase-14-design-system.md](phases/phase-14-design-system.md) |
 
 ---
 

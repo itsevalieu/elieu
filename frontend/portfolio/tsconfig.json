@@ -20,7 +20,9 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@evalieu/common": ["../common/src/index.ts"]
+      "@evalieu/common": ["../common/src/index.ts"],
+      "@evalieu/design-system": ["../design-system/src/index.ts"],
+      "@evalieu/design-system/*": ["../design-system/src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

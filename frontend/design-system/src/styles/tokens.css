@@ -1,0 +1,169 @@
+/* ============================================================
+   Design System — CSS Custom Properties
+   
+   Consumed by all frontends. Theme switching via data attributes:
+     data-theme="light" | "dark"
+     data-layout="newspaper" | "magazine"
+     data-app="portfolio" | "admin"
+   ============================================================ */
+
+:root {
+  /* --- Spacing --- */
+  --ds-space-0: 0;
+  --ds-space-xs: 0.25rem;
+  --ds-space-sm: 0.5rem;
+  --ds-space-md: 1rem;
+  --ds-space-lg: 2rem;
+  --ds-space-xl: 3rem;
+  --ds-space-2xl: 4rem;
+  --ds-space-3xl: 6rem;
+
+  /* --- Max widths --- */
+  --ds-max-prose: 720px;
+  --ds-max-content: 880px;
+  --ds-max-wide: 1200px;
+
+  /* --- Typography --- */
+  --ds-font-headline: "Playfair Display", Georgia, serif;
+  --ds-font-body: "Lora", Georgia, serif;
+  --ds-font-sans: "Inter", "DM Sans", system-ui, sans-serif;
+  --ds-font-mono: "JetBrains Mono", monospace;
+
+  --ds-text-xs: 0.72rem;
+  --ds-text-sm: 0.85rem;
+  --ds-text-base: 1rem;
+  --ds-text-md: 1.05rem;
+  --ds-text-lg: 1.2rem;
+  --ds-text-xl: 1.5rem;
+  --ds-text-2xl: 1.75rem;
+  --ds-text-3xl: 2rem;
+  --ds-text-4xl: 2.85rem;
+  --ds-text-hero: clamp(2.25rem, 6vw, 3.5rem);
+
+  /* --- Radius --- */
+  --ds-radius-sm: 0.25rem;
+  --ds-radius-md: 0.5rem;
+  --ds-radius-lg: 0.75rem;
+  --ds-radius-xl: 1rem;
+  --ds-radius-full: 9999px;
+
+  /* --- Transitions --- */
+  --ds-transition-fast: 150ms ease;
+  --ds-transition-base: 200ms ease;
+  --ds-transition-slow: 300ms ease;
+
+  /* --- Shadows --- */
+  --ds-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --ds-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --ds-shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.1);
+  --ds-shadow-xl: 0 10px 40px rgba(0, 0, 0, 0.12);
+
+  /* --- Semantic colors (shared across all themes) --- */
+  --ds-error: #b91c1c;
+  --ds-error-bg: #fef2f2;
+  --ds-success: #15803d;
+  --ds-success-bg: #f0fdf4;
+  --ds-warning: #92400e;
+  --ds-warning-bg: #fffbeb;
+  --ds-info: #1d4ed8;
+  --ds-info-bg: #eff6ff;
+
+  /* --- Newspaper light (default) --- */
+  --ds-color-bg: #faf8f4;
+  --ds-color-ink: #1a1a1a;
+  --ds-color-rule: #2a2a2a;
+  --ds-color-rule-light: #ccc;
+  --ds-color-accent: #8b0000;
+  --ds-color-muted: #666666;
+  --ds-color-card: #ffffff;
+  --ds-color-code-bg: #f2efe8;
+  --ds-color-input-bg: #ffffff;
+  --ds-color-border: #d4d4d4;
+}
+
+/* --- Newspaper dark --- */
+[data-theme="dark"] {
+  --ds-color-bg: #1a1a1a;
+  --ds-color-ink: #e8e4dd;
+  --ds-color-rule: #d4c9b8;
+  --ds-color-rule-light: #3a3a3a;
+  --ds-color-accent: #e05555;
+  --ds-color-muted: #a0998e;
+  --ds-color-card: #242424;
+  --ds-color-code-bg: #2a2a2a;
+  --ds-color-input-bg: #2a2a2a;
+  --ds-color-border: #444;
+  --ds-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --ds-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --ds-shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Magazine light --- */
+[data-layout="magazine"] {
+  --ds-font-headline: var(--ds-font-sans);
+  --ds-font-body: var(--ds-font-sans);
+  --ds-color-bg: #ffffff;
+  --ds-color-ink: #111111;
+  --ds-color-rule: #e5e5e5;
+  --ds-color-rule-light: #f0f0f0;
+  --ds-color-accent: #2563eb;
+  --ds-color-muted: #737373;
+  --ds-color-card: #ffffff;
+  --ds-color-code-bg: #f4f4f5;
+  --ds-color-input-bg: #ffffff;
+  --ds-color-border: #e5e5e5;
+}
+
+/* --- Magazine dark --- */
+[data-theme="dark"][data-layout="magazine"] {
+  --ds-color-bg: #111111;
+  --ds-color-ink: #f0f0f0;
+  --ds-color-rule: #333333;
+  --ds-color-rule-light: #2a2a2a;
+  --ds-color-accent: #60a5fa;
+  --ds-color-muted: #a3a3a3;
+  --ds-color-card: #1a1a1a;
+  --ds-color-code-bg: #1e1e1e;
+  --ds-color-input-bg: #1e1e1e;
+  --ds-color-border: #333;
+}
+
+/* --- Portfolio light --- */
+[data-app="portfolio"] {
+  --ds-font-headline: var(--ds-font-sans);
+  --ds-font-body: var(--ds-font-sans);
+  --ds-color-bg: #f5f5f5;
+  --ds-color-ink: #333333;
+  --ds-color-rule: #dddddd;
+  --ds-color-rule-light: #eeeeee;
+  --ds-color-accent: #0070f3;
+  --ds-color-muted: #666666;
+  --ds-color-card: #ffffff;
+  --ds-color-code-bg: #f0f0f0;
+  --ds-color-input-bg: #ffffff;
+  --ds-color-border: #d4d4d4;
+}
+
+/* --- Portfolio dark --- */
+[data-theme="dark"][data-app="portfolio"] {
+  --ds-color-bg: #111111;
+  --ds-color-ink: #e5e5e5;
+  --ds-color-rule: #333333;
+  --ds-color-rule-light: #2a2a2a;
+  --ds-color-accent: #3b82f6;
+  --ds-color-muted: #a3a3a3;
+  --ds-color-card: #1a1a1a;
+  --ds-color-code-bg: #1e1e1e;
+  --ds-color-input-bg: #1e1e1e;
+  --ds-color-border: #444;
+}
+
+/* --- Category accent palette --- */
+:root {
+  --ds-cat-writing: hsl(210, 60%, 50%);
+  --ds-cat-projects: hsl(150, 50%, 40%);
+  --ds-cat-reviews: hsl(30, 80%, 50%);
+  --ds-cat-life: hsl(340, 60%, 50%);
+  --ds-cat-tracking: hsl(270, 50%, 50%);
+  --ds-cat-games: hsl(180, 60%, 40%);
+}

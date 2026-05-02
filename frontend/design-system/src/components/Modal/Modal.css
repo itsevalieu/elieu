@@ -1,0 +1,45 @@
+.ds-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-space-md);
+}
+
+.ds-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  border: none;
+  cursor: default;
+}
+
+.ds-modal {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 32rem;
+  background: var(--ds-color-card);
+  border: 1px solid var(--ds-color-border);
+  border-radius: var(--ds-radius-xl);
+  padding: var(--ds-space-lg);
+  box-shadow: var(--ds-shadow-xl);
+}
+
+.ds-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ds-space-sm);
+  margin-bottom: var(--ds-space-md);
+}
+
+.ds-modal__title {
+  font-family: var(--ds-font-headline);
+  font-size: var(--ds-text-lg);
+  font-weight: 600;
+  color: var(--ds-color-ink);
+}

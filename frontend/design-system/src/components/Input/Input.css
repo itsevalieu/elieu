@@ -1,0 +1,50 @@
+.ds-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.ds-field__label {
+  font-size: var(--ds-text-sm);
+  font-weight: 500;
+  color: var(--ds-color-ink);
+}
+
+.ds-field__required {
+  color: var(--ds-error);
+}
+
+.ds-field__error {
+  font-size: var(--ds-text-sm);
+  color: var(--ds-error);
+}
+
+.ds-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: var(--ds-text-base);
+  color: var(--ds-color-ink);
+  background: var(--ds-color-input-bg);
+  border: 1px solid var(--ds-color-border);
+  border-radius: var(--ds-radius-md);
+  outline: none;
+  transition: border-color var(--ds-transition-fast), box-shadow var(--ds-transition-fast);
+}
+
+.ds-input::placeholder {
+  color: var(--ds-color-muted);
+}
+
+.ds-input:focus {
+  border-color: var(--ds-color-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ds-color-accent) 20%, transparent);
+}
+
+.ds-input--error {
+  border-color: var(--ds-error);
+}
+
+.ds-input--error:focus {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ds-error) 20%, transparent);
+}

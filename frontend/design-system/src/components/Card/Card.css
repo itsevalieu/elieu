@@ -1,0 +1,22 @@
+.ds-card {
+  background: var(--ds-color-card);
+  border-radius: var(--ds-radius-lg);
+  transition: box-shadow var(--ds-transition-base), border-color var(--ds-transition-base);
+}
+
+.ds-card--bordered {
+  border: 1px solid var(--ds-color-border);
+}
+
+.ds-card--elevated {
+  box-shadow: var(--ds-shadow-md);
+}
+
+.ds-card--elevated:hover {
+  box-shadow: var(--ds-shadow-lg);
+}
+
+.ds-card--pad-none { padding: 0; }
+.ds-card--pad-sm { padding: var(--ds-space-sm); }
+.ds-card--pad-md { padding: var(--ds-space-md); }
+.ds-card--pad-lg { padding: var(--ds-space-lg); }

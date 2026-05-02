@@ -1,0 +1,11 @@
+.ds-container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--ds-space-md);
+  padding-right: var(--ds-space-md);
+}
+
+.ds-container--prose   { max-width: var(--ds-max-prose); }
+.ds-container--content { max-width: var(--ds-max-content); }
+.ds-container--wide    { max-width: var(--ds-max-wide); }

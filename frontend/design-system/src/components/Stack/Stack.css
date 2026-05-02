@@ -1,0 +1,13 @@
+.ds-stack {
+  display: flex;
+}
+
+.ds-stack--column { flex-direction: column; }
+.ds-stack--row    { flex-direction: row; }
+.ds-stack--wrap   { flex-wrap: wrap; }
+
+.ds-stack--gap-xs { gap: var(--ds-space-xs); }
+.ds-stack--gap-sm { gap: var(--ds-space-sm); }
+.ds-stack--gap-md { gap: var(--ds-space-md); }
+.ds-stack--gap-lg { gap: var(--ds-space-lg); }
+.ds-stack--gap-xl { gap: var(--ds-space-xl); }

@@ -1,0 +1,4 @@
+.ds-textarea {
+  min-height: 6rem;
+  resize: vertical;
+}

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@evalieu/common": "*",
+    "@evalieu/design-system": "*",
     "@hello-pangea/dnd": "^18",
     "@hookform/resolvers": "^3",
     "@platejs/basic-nodes": "^53.0.0",

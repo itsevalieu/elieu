@@ -1,0 +1,127 @@
+/* ============================================================
+   Design System — Typography base classes
+   ============================================================ */
+
+.ds-headline {
+  font-family: var(--ds-font-headline);
+  font-weight: 700;
+  line-height: 1.08;
+}
+
+.ds-body {
+  font-family: var(--ds-font-body);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.ds-sans {
+  font-family: var(--ds-font-sans);
+}
+
+.ds-mono {
+  font-family: var(--ds-font-mono);
+}
+
+.ds-overline {
+  font-size: var(--ds-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ds-color-muted);
+  font-family: var(--ds-font-headline);
+}
+
+.ds-caption {
+  font-size: var(--ds-text-sm);
+  color: var(--ds-color-muted);
+}
+
+.ds-prose {
+  font-size: var(--ds-text-md);
+  color: var(--ds-color-ink);
+}
+
+.ds-prose h1,
+.ds-prose h2,
+.ds-prose h3 {
+  font-family: var(--ds-font-headline);
+  margin-top: var(--ds-space-lg);
+  margin-bottom: var(--ds-space-sm);
+  line-height: 1.22;
+}
+
+.ds-prose p {
+  margin-bottom: var(--ds-space-md);
+}
+
+.ds-prose a {
+  color: var(--ds-color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ds-prose blockquote {
+  border-left: 3px solid var(--ds-color-rule);
+  padding-left: var(--ds-space-md);
+  margin: var(--ds-space-md) 0;
+  font-style: italic;
+  color: var(--ds-color-muted);
+}
+
+.ds-prose code {
+  font-family: var(--ds-font-mono);
+  font-size: 0.9em;
+  background: var(--ds-color-code-bg);
+  padding: 0.1em 0.35em;
+  border-radius: var(--ds-radius-sm);
+}
+
+.ds-prose pre {
+  font-family: var(--ds-font-mono);
+  font-size: 0.82rem;
+  overflow: auto;
+  padding: var(--ds-space-md);
+  border: 1px solid var(--ds-color-rule);
+  margin-bottom: var(--ds-space-md);
+  background: var(--ds-color-code-bg);
+  border-radius: var(--ds-radius-md);
+}
+
+.ds-prose pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.ds-prose ul,
+.ds-prose ol {
+  margin-bottom: var(--ds-space-md);
+  padding-left: 1.35rem;
+}
+
+.ds-prose li {
+  margin-bottom: var(--ds-space-xs);
+}
+
+.ds-prose img {
+  border: 1px solid var(--ds-color-rule);
+  margin: var(--ds-space-md) 0;
+  border-radius: var(--ds-radius-md);
+}
+
+.ds-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--ds-space-md);
+  font-size: 0.92rem;
+}
+
+.ds-prose th,
+.ds-prose td {
+  border: 1px solid var(--ds-color-rule);
+  padding: var(--ds-space-sm);
+}
+
+.ds-prose hr {
+  border: none;
+  border-top: 1px solid var(--ds-color-rule);
+  margin: var(--ds-space-lg) 0;
+}

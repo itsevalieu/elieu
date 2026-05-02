@@ -4,6 +4,29 @@ Running log of all work sessions, decisions, and changes. Newest entries at the 
 
 ---
 
+## 2026-05-02 — Phase 14: Design System & UI Library
+
+### Done
+- **Created `@evalieu/design-system` package** (`frontend/design-system/`) as the unified source of truth for styling across newsletter, magazine, portfolio, and admin apps
+- **Design tokens**: CSS custom properties (`--ds-*` prefix) for colors, typography, spacing, radius, shadows, and transitions; theme-aware via `data-theme` and `data-layout` / `data-app` attributes
+- **TypeScript token exports**: `colors`, `fontFamily`, `fontSize`, `fontWeight`, `lineHeight`, `letterSpacing`, `spacing`, `maxWidth`, `breakpoints`, `mediaQueries` — importable by any app for JS-side logic
+- **Base styles**: CSS reset/normalize, typography utility classes (`.ds-headline`, `.ds-body`, `.ds-prose`, `.ds-overline`, `.ds-caption`), all consuming design tokens
+- **Component library**: `Button`, `Input`, `Select`, `Textarea`, `Card`, `Badge`, `Container`, `Stack`, `Modal` — all styled with CSS custom properties (framework-agnostic, works with SCSS modules or Tailwind)
+- **Theme support**: 6 built-in palettes — newspaper light/dark, magazine light/dark, portfolio light/dark — plus semantic colors (error, success, warning, info) and category accent colors
+- **Wired into all apps**: Added as dependency to newsletter, portfolio, and admin; configured `transpilePackages` in each Next.js config; added tsconfig paths
+- **Portfolio fixes**: Imported `globals.scss` in layout (was missing), set `data-app="portfolio"` for theme scoping, mapped legacy `--primary-color` etc. to `--ds-*` tokens
+
+### Changed files
+- New: `frontend/design-system/` (entire package — package.json, tsconfig, tokens, styles, components)
+- Modified: `frontend/{newsletter,portfolio,admin}/package.json` — added `@evalieu/design-system` dep
+- Modified: `frontend/{newsletter,portfolio,admin}/tsconfig.json` — added design-system paths
+- Modified: `frontend/{newsletter,portfolio,admin}/next.config.ts` — added `transpilePackages`
+- Modified: `frontend/portfolio/src/app/layout.tsx` — imported globals + design-system styles, added `data-app`
+- Modified: `frontend/portfolio/src/app/globals.scss` — mapped to `--ds-*` tokens
+- `docs/ROADMAP.md`, `docs/CHANGELOG.md`
+
+---
+
 ## 2026-05-01 — Phase 13: Dark mode, search, scheduled publish & draft previews
 
 ### Done

@@ -1,0 +1,51 @@
+.ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--ds-transition-fast), color var(--ds-transition-fast),
+    border-color var(--ds-transition-fast), opacity var(--ds-transition-fast);
+}
+
+.ds-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Variants */
+.ds-btn--primary {
+  background: var(--ds-color-ink);
+  color: var(--ds-color-bg);
+  border-color: var(--ds-color-ink);
+}
+.ds-btn--primary:hover:not(:disabled) { opacity: 0.88; }
+
+.ds-btn--secondary {
+  background: var(--ds-color-card);
+  color: var(--ds-color-ink);
+  border-color: var(--ds-color-border);
+  box-shadow: var(--ds-shadow-sm);
+}
+.ds-btn--secondary:hover:not(:disabled) { background: var(--ds-color-bg); }
+
+.ds-btn--danger {
+  background: var(--ds-error);
+  color: #fff;
+  border-color: var(--ds-error);
+}
+.ds-btn--danger:hover:not(:disabled) { opacity: 0.88; }
+
+.ds-btn--ghost {
+  background: transparent;
+  color: var(--ds-color-ink);
+  border-color: transparent;
+}
+.ds-btn--ghost:hover:not(:disabled) { background: var(--ds-color-code-bg); }
+
+/* Sizes */
+.ds-btn--sm { padding: 0.3rem 0.6rem; font-size: var(--ds-text-xs); border-radius: var(--ds-radius-md); }
+.ds-btn--md { padding: 0.5rem 1rem; font-size: var(--ds-text-sm); border-radius: var(--ds-radius-lg); }
+.ds-btn--lg { padding: 0.65rem 1.25rem; font-size: var(--ds-text-base); border-radius: var(--ds-radius-lg); }
