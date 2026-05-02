@@ -93,15 +93,23 @@ jobs:
           needs.detect_changes.outputs.portfolio_api == 'true' ||
           needs.detect_changes.outputs.backend_common == 'true'
         run: |
-          docker build -t ${{ steps.ecr.outputs.registry }}/evalieu-portfolio-api:${{ github.sha }} backend/portfolio-api
+          docker build \
+            -t ${{ steps.ecr.outputs.registry }}/evalieu-portfolio-api:${{ github.sha }} \
+            -t ${{ steps.ecr.outputs.registry }}/evalieu-portfolio-api:latest \
+            backend/portfolio-api
           docker push ${{ steps.ecr.outputs.registry }}/evalieu-portfolio-api:${{ github.sha }}
-          aws ecs update-service --cluster evalieu --service portfolio-api --force-new-deployment
+          docker push ${{ steps.ecr.outputs.registry }}/evalieu-portfolio-api:latest
+          aws ecs update-service --cluster evalieu-prod --service portfolio-api --force-new-deployment
 
       - name: Build and push newsletter-api
         if: >
           needs.detect_changes.outputs.newsletter_api == 'true' ||
           needs.detect_changes.outputs.backend_common == 'true'
         run: |
-          docker build -t ${{ steps.ecr.outputs.registry }}/evalieu-newsletter-api:${{ github.sha }} backend/newsletter-api
+          docker build \
+            -t ${{ steps.ecr.outputs.registry }}/evalieu-newsletter-api:${{ github.sha }} \
+            -t ${{ steps.ecr.outputs.registry }}/evalieu-newsletter-api:latest \
+            backend/newsletter-api
           docker push ${{ steps.ecr.outputs.registry }}/evalieu-newsletter-api:${{ github.sha }}
-          aws ecs update-service --cluster evalieu --service newsletter-api --force-new-deployment
+          docker push ${{ steps.ecr.outputs.registry }}/evalieu-newsletter-api:latest
+          aws ecs update-service --cluster evalieu-prod --service newsletter-api --force-new-deployment

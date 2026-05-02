@@ -20,7 +20,6 @@ import {
   H1Plugin,
   H2Plugin,
   H3Plugin,
-  CodeBlockPlugin,
 } from '@platejs/basic-nodes/react';
 import { MarkdownPlugin, deserializeMd, serializeMd } from '@platejs/markdown';
 
@@ -38,15 +37,6 @@ function BlockquoteEl(props: PlateElementProps) {
     <PlateElement
       as="blockquote"
       style={{ borderLeft: '3px solid #d4d4d8', paddingLeft: '1rem', color: '#71717a', fontStyle: 'italic', margin: '0.5em 0' }}
-      {...props}
-    />
-  );
-}
-function CodeBlockEl(props: PlateElementProps) {
-  return (
-    <PlateElement
-      as="pre"
-      style={{ background: '#f4f4f5', borderRadius: 6, padding: '0.75rem 1rem', fontFamily: 'monospace', fontSize: '0.875rem', overflow: 'auto', margin: '0.5em 0' }}
       {...props}
     />
   );
@@ -78,7 +68,6 @@ export function RichTextEditor({ value, onChange, label, error }: RichTextEditor
     H2Plugin.withComponent(H2Element),
     H3Plugin.withComponent(H3Element),
     BlockquotePlugin.withComponent(BlockquoteEl),
-    CodeBlockPlugin.withComponent(CodeBlockEl),
     MarkdownPlugin,
   ], []);
 

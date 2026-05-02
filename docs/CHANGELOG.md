@@ -4,6 +4,23 @@ Running log of all work sessions, decisions, and changes. Newest entries at the 
 
 ---
 
+## 2026-05-01 — Phase 12 prep: Deployment fixes & go-live plan
+
+### Done
+- **ECS cluster name fix**: Changed `ci-backend.yml` from `--cluster evalieu` to `--cluster evalieu-prod` to match Terraform's `${project}-${environment}` naming
+- **Docker image tag fix**: CI now pushes both `:${{ github.sha }}` and `:latest` tags so ECS task definitions (which reference `:latest`) always resolve to a valid image
+- **Portfolio cookie fix**: Added `jwt.cookie-same-site=Strict` and `spring.jpa.show-sql=false` to `application-prod.properties` (was missing, newsletter already had it)
+- **EAS config**: Created `mobile/eas.json` with development/preview/production build profiles and App Store/Play Store submit config
+- **Mobile gitignore**: Added `google-service-account.json` and `.env` to `mobile/.gitignore`
+- **Phase 12 doc**: Created `docs/phases/phase-12-production-deployment.md` with full go-live checklist covering AWS bootstrap, GitHub OIDC, Terraform, DNS, Vercel, SES, mobile app publishing, smoke tests, monitoring, and cost estimates
+
+### Changed
+- `ci-backend.yml`: cluster name `evalieu` → `evalieu-prod`, added `:latest` tag push alongside `:sha`
+- `backend/portfolio-api/src/main/resources/application-prod.properties`: added `jwt.cookie-same-site=Strict`
+- `docs/ROADMAP.md`: added Phase 12 entry, updated current focus
+
+---
+
 ## 2026-05-01 — Phase 11: Hardening, Polish & Testing
 
 ### Done

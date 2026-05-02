@@ -14,7 +14,7 @@ Personal newspaper/magazine blog and portfolio platform. Full product plan lives
 
 ## Current Focus
 
-> All phases complete!
+> Phase 12 — Production Deployment & Go-Live
 
 ---
 
@@ -34,6 +34,7 @@ Personal newspaper/magazine blog and portfolio platform. Full product plan lives
 | 9 | Games Integration | `[x]` | [phase-9-games.md](phases/phase-9-games.md) |
 | 10 | React Native Mobile App | `[x]` | [phase-10-mobile-app.md](phases/phase-10-mobile-app.md) |
 | 11 | Hardening, Polish & Testing | `[x]` | [phase-11-hardening.md](phases/phase-11-hardening.md) |
+| 12 | Production Deployment & Go-Live | `[ ]` | [phase-12-production-deployment.md](phases/phase-12-production-deployment.md) |
 
 ---
 
