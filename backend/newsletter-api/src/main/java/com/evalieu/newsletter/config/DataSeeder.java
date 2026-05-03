@@ -171,7 +171,7 @@ public class DataSeeder implements ApplicationRunner {
 						+ "where I share short stories, poems, coding projects, watercolors, travel adventures, "
 						+ "recipes, and whatever else I'm working on.\n\n"
 						+ "Think of it as a newspaper for one person's many hobbies. Grab a coffee and stay a while.")
-				.coverImageUrl("https://images.unsplash.com/photo-1504711434969-e33886168d5c?w=800&q=80")
+				.coverImageUrl("https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=800&q=80")
 				.categoryId(hob)
 				.format("article").layoutHint("featured")
 				.status("published").publishedAt(now).issueId(iid)
@@ -636,7 +636,7 @@ public class DataSeeder implements ApplicationRunner {
 						+ "**Lens**: 23mm f/2\n"
 						+ "**Settings**: ISO 400, f/5.6, 1/60s\n\n"
 						+ "No edits except a slight curves adjustment. The mist did all the work.")
-				.coverImageUrl("https://images.unsplash.com/photo-1485470733090-0aae1788d668?w=600&q=80")
+				.coverImageUrl("https://images.unsplash.com/photo-1470770903676-69b98201ea1c?w=600&q=80")
 				.categoryId(life)
 				.subcategoryId(c.photos.getId())
 				.format("photo-caption").layoutHint("column")
